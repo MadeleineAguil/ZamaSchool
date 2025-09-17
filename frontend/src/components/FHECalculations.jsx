@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
-import { useAccount, useSigner } from 'wagmi'
+import { useAccount, useWalletClient } from 'wagmi'
 
 const FHECalculations = () => {
   const { instance } = useFHEVM()
   const { address } = useAccount()
-  const { data: signer } = useSigner()
+  const { data: walletClient } = useWalletClient()
   const [operationNumber, setOperationNumber] = useState('')
   const [divisor, setDivisor] = useState('')
   const [selectedOperation, setSelectedOperation] = useState('add')
@@ -110,7 +110,7 @@ const FHECalculations = () => {
   }
 
   const handleDecryptResult = async () => {
-    if (!calculationResult || !signer) {
+    if (!calculationResult || !walletClient) {
       alert('没有可解密的结果或钱包未连接')
       return
     }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { createInstance, SepoliaConfig } from '@zama-fhe/relayer-sdk'
+import { createInstance, SepoliaConfig } from '@zama-fhe/relayer-sdk/bundle'
 import { useAccount } from 'wagmi'
 
 export const useFHEVM = () => {

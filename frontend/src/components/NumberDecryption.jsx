@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
-import { useAccount, useSigner } from 'wagmi'
+import { useAccount, useWalletClient } from 'wagmi'
 
 const NumberDecryption = () => {
   const { instance } = useFHEVM()
   const { address } = useAccount()
-  const { data: signer } = useSigner()
+  const { data: walletClient } = useWalletClient()
   const [isDecrypting, setIsDecrypting] = useState(false)
   const [decryptedValue, setDecryptedValue] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
@@ -14,7 +14,7 @@ const NumberDecryption = () => {
   const CONTRACT_ADDRESS = '0x...' // 将在部署后填入真实地址
 
   const handleDecryptNumber = async () => {
-    if (!instance || !ciphertextHandle || !address || !signer) {
+    if (!instance || !ciphertextHandle || !address || !walletClient) {
       alert('请确保钱包已连接且输入了密文句柄')
       return
     }
@@ -45,13 +45,14 @@ const NumberDecryption = () => {
       )
 
       // 用户签名
-      const signature = await signer.signTypedData(
-        eip712.domain,
-        {
+      const signature = await walletClient.signTypedData({
+        domain: eip712.domain,
+        types: {
           UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification,
         },
-        eip712.message
-      )
+        primaryType: 'UserDecryptRequestVerification',
+        message: eip712.message
+      })
 
       // 执行用户解密
       const result = await instance.userDecrypt(

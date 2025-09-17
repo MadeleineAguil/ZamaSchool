@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } from 'wagmi'
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { getContractAddress } from '../config/contracts'
 import NumberStorageABI from '../config/NumberStorageABI.json'
 import AddressStorageABI from '../config/AddressStorageABI.json'
@@ -8,27 +8,21 @@ export const useNumberStorage = () => {
   const { address, chainId } = useAccount()
   const contractAddress = getContractAddress('NumberStorage', chainId)
 
-  // 存储数字
-  const {
-    data: storeData,
-    isLoading: isStoring,
-    write: storeNumber
-  } = useContractWrite({
-    address: contractAddress,
-    abi: NumberStorageABI,
-    functionName: 'storeNumber',
-  })
+  // 写合约hook
+  const { writeContract, data: writeData, isPending: isWriting } = useWriteContract()
 
   // 获取存储的数字
   const {
     data: storedNumber,
     isError: getStoredError,
     isLoading: isGettingStored
-  } = useContractRead({
+  } = useReadContract({
     address: contractAddress,
     abi: NumberStorageABI,
     functionName: 'getStoredNumber',
-    enabled: !!address,
+    query: {
+      enabled: !!address && !!contractAddress,
+    }
   })
 
   // 获取计算结果
@@ -36,63 +30,69 @@ export const useNumberStorage = () => {
     data: calculationResult,
     isError: getResultError,
     isLoading: isGettingResult
-  } = useContractRead({
+  } = useReadContract({
     address: contractAddress,
     abi: NumberStorageABI,
     functionName: 'getCalculationResult',
-    enabled: !!address,
+    query: {
+      enabled: !!address && !!contractAddress,
+    }
   })
+
+  // 存储数字
+  const storeNumber = (args) => {
+    writeContract({
+      address: contractAddress,
+      abi: NumberStorageABI,
+      functionName: 'storeNumber',
+      args
+    })
+  }
 
   // 加法运算
-  const {
-    data: addData,
-    isLoading: isAdding,
-    write: addToStoredNumber
-  } = useContractWrite({
-    address: contractAddress,
-    abi: NumberStorageABI,
-    functionName: 'addToStoredNumber',
-  })
+  const addToStoredNumber = (args) => {
+    writeContract({
+      address: contractAddress,
+      abi: NumberStorageABI,
+      functionName: 'addToStoredNumber',
+      args
+    })
+  }
 
   // 减法运算
-  const {
-    data: subData,
-    isLoading: isSubtracting,
-    write: subtractFromStoredNumber
-  } = useContractWrite({
-    address: contractAddress,
-    abi: NumberStorageABI,
-    functionName: 'subtractFromStoredNumber',
-  })
+  const subtractFromStoredNumber = (args) => {
+    writeContract({
+      address: contractAddress,
+      abi: NumberStorageABI,
+      functionName: 'subtractFromStoredNumber',
+      args
+    })
+  }
 
   // 乘法运算
-  const {
-    data: mulData,
-    isLoading: isMultiplying,
-    write: multiplyStoredNumber
-  } = useContractWrite({
-    address: contractAddress,
-    abi: NumberStorageABI,
-    functionName: 'multiplyStoredNumber',
-  })
+  const multiplyStoredNumber = (args) => {
+    writeContract({
+      address: contractAddress,
+      abi: NumberStorageABI,
+      functionName: 'multiplyStoredNumber',
+      args
+    })
+  }
 
   // 除法运算
-  const {
-    data: divData,
-    isLoading: isDividing,
-    write: divideStoredNumber
-  } = useContractWrite({
-    address: contractAddress,
-    abi: NumberStorageABI,
-    functionName: 'divideStoredNumber',
-  })
+  const divideStoredNumber = (args) => {
+    writeContract({
+      address: contractAddress,
+      abi: NumberStorageABI,
+      functionName: 'divideStoredNumber',
+      args
+    })
+  }
 
   return {
     contractAddress,
     // 存储相关
     storeNumber,
-    isStoring,
-    storeData,
     storedNumber,
     isGettingStored,
     getStoredError,
@@ -102,17 +102,12 @@ export const useNumberStorage = () => {
     getResultError,
     // 运算函数
     addToStoredNumber,
-    isAdding,
-    addData,
     subtractFromStoredNumber,
-    isSubtracting,
-    subData,
     multiplyStoredNumber,
-    isMultiplying,
-    mulData,
     divideStoredNumber,
-    isDividing,
-    divData
+    // 写合约状态
+    isWriting,
+    writeData
   }
 }
 
@@ -120,52 +115,53 @@ export const useAddressStorage = () => {
   const { address, chainId } = useAccount()
   const contractAddress = getContractAddress('AddressStorage', chainId)
 
-  // 存储地址
-  const {
-    data: storeData,
-    isLoading: isStoring,
-    write: storeAddress
-  } = useContractWrite({
-    address: contractAddress,
-    abi: AddressStorageABI,
-    functionName: 'storeAddress',
-  })
-
-  // 存储随机地址
-  const {
-    data: storeRandomData,
-    isLoading: isStoringRandom,
-    write: storeRandomAddress
-  } = useContractWrite({
-    address: contractAddress,
-    abi: AddressStorageABI,
-    functionName: 'storeRandomAddress',
-  })
+  // 写合约hook
+  const { writeContract, data: writeData, isPending: isWriting } = useWriteContract()
 
   // 获取存储的地址
   const {
     data: storedAddress,
     isError: getStoredError,
     isLoading: isGettingStored
-  } = useContractRead({
+  } = useReadContract({
     address: contractAddress,
     abi: AddressStorageABI,
     functionName: 'getStoredAddress',
-    enabled: !!address,
+    query: {
+      enabled: !!address && !!contractAddress,
+    }
   })
+
+  // 存储地址
+  const storeAddress = (args) => {
+    writeContract({
+      address: contractAddress,
+      abi: AddressStorageABI,
+      functionName: 'storeAddress',
+      args
+    })
+  }
+
+  // 存储随机地址
+  const storeRandomAddress = () => {
+    writeContract({
+      address: contractAddress,
+      abi: AddressStorageABI,
+      functionName: 'storeRandomAddress',
+    })
+  }
 
   return {
     contractAddress,
     // 存储相关
     storeAddress,
-    isStoring,
-    storeData,
     storeRandomAddress,
-    isStoringRandom,
-    storeRandomData,
     // 获取相关
     storedAddress,
     isGettingStored,
-    getStoredError
+    getStoredError,
+    // 写合约状态
+    isWriting,
+    writeData
   }
 }
