@@ -17,7 +17,10 @@ const SDKDemo = () => {
       alert('请先连接钱包')
       return
     }
-    await initFHEVM()
+    console.log('开始初始化SDK...')
+    const success = await initFHEVM()
+    console.log('初始化完成，结果:', success)
+    // 注意：这里的状态可能还没有更新，因为React状态更新是异步的
   }
 
   return (

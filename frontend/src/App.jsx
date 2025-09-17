@@ -10,11 +10,14 @@ import AddressStorage from './components/AddressStorage'
 import AddressDecryption from './components/AddressDecryption'
 import FHECalculations from './components/FHECalculations'
 
+// 导入Context
+import { FHEVMProvider } from './contexts/FHEVMContext'
+
 function App() {
   const { address, isConnected } = useAccount()
 
   return (
-    <>
+    <FHEVMProvider>
       <header style={{
         padding: '20px',
         textAlign: 'center',
@@ -137,7 +140,7 @@ function App() {
           Powered by <strong>Zama</strong> | 全同态加密技术学习平台
         </p>
       </footer>
-    </>
+    </FHEVMProvider>
   )
 }
 
