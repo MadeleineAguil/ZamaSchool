@@ -4,7 +4,7 @@ import { useAccount } from 'wagmi'
 import { isAddress } from 'viem'
 
 const AddressStorage = () => {
-  const { instance } = useFHEVM()
+  const { instance, isInitialized } = useFHEVM()
   const { address } = useAccount()
   const [inputAddress, setInputAddress] = useState('')
   const [isEncrypting, setIsEncrypting] = useState(false)
@@ -89,6 +89,18 @@ const AddressStorage = () => {
       console.error('存储失败:', error)
       alert('存储失败: ' + error.message)
     }
+  }
+
+  if (!isInitialized) {
+    return (
+      <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
+        <h3>步骤4: 地址加密存储</h3>
+        <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+          <p>⏳ 请先完成步骤1中的SDK初始化</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行加密操作</p>
+        </div>
+      </div>
+    )
   }
 
   return (

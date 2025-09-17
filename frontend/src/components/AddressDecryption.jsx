@@ -3,7 +3,7 @@ import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
 
 const AddressDecryption = () => {
-  const { instance } = useFHEVM()
+  const { instance, isInitialized } = useFHEVM()
   const { address } = useAccount()
   const { data: walletClient } = useWalletClient()
   const [isDecrypting, setIsDecrypting] = useState(false)
@@ -93,6 +93,18 @@ const AddressDecryption = () => {
 
   const isValidEthereumAddress = (addr) => {
     return /^0x[a-fA-F0-9]{40}$/.test(addr)
+  }
+
+  if (!isInitialized) {
+    return (
+      <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
+        <h3>步骤5: 地址解密读取</h3>
+        <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+          <p>⏳ 请先完成步骤1中的SDK初始化</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行解密操作</p>
+        </div>
+      </div>
+    )
   }
 
   return (

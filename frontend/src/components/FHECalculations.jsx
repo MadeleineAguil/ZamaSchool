@@ -3,7 +3,7 @@ import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
 
 const FHECalculations = () => {
-  const { instance } = useFHEVM()
+  const { instance, isInitialized } = useFHEVM()
   const { address } = useAccount()
   const { data: walletClient } = useWalletClient()
   const [operationNumber, setOperationNumber] = useState('')
@@ -148,6 +148,18 @@ const FHECalculations = () => {
       console.error('解密失败:', error)
       alert('解密失败: ' + error.message)
     }
+  }
+
+  if (!isInitialized) {
+    return (
+      <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
+        <h3>步骤6: FHE计算功能（加减乘除）</h3>
+        <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+          <p>⏳ 请先完成步骤1中的SDK初始化</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行计算操作</p>
+        </div>
+      </div>
+    )
   }
 
   return (
