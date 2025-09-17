@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createInstance, SepoliaConfig } from '@zama-fhe/relayer-sdk/bundle'
+import { createInstance, SepoliaConfig,initSDK } from '@zama-fhe/relayer-sdk/bundle'
 import { useAccount } from 'wagmi'
 
 export const useFHEVM = () => {
@@ -16,13 +16,13 @@ export const useFHEVM = () => {
     }
 
     try {
+       await initSDK()
       setIsLoading(true)
       setError(null)
 
       // 创建FHEVM实例
       const config = {
-        ...SepoliaConfig,
-        network: window.ethereum
+        ...SepoliaConfig
       }
 
       const fhevmInstance = await createInstance(config)
