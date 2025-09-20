@@ -7,11 +7,12 @@ export const CONTRACTS = {
     AddressStorage: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
   },
 
-  // Sepolia测试网 (需要部署后更新)
+  // Sepolia测试网
   sepolia: {
     chainId: 11155111,
-    NumberStorage: '0x...', // 部署后填写
-    AddressStorage: '0x...' // 部署后填写
+    NumberStorage: '0xb6Ffd1CB3ADBf515A4e562F4fE8c8B286C03D033',
+    AddressStorage: '0x85B9c11E98c6b550b4483158E1AbF53482E18322',
+    OnchainDecryption: '0xB19aAAb3c5f95FAbfb3A4cD1BB2b44Ed42356A13'
   }
 }
 

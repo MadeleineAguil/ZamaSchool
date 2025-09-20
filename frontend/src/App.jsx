@@ -9,6 +9,7 @@ import NumberStorage from './components/NumberStorage'
 import NumberDecryption from './components/NumberDecryption'
 import AddressStorage from './components/AddressStorage'
 import AddressDecryption from './components/AddressDecryption'
+import OnchainDecryption from './components/OnchainDecryption'
 import FHECalculations from './components/FHECalculations'
 
 // 导入Context
@@ -57,6 +58,13 @@ const chapters = [
     icon: '🔍',
     fallbackIcon: '◉',
     component: AddressDecryption
+  },
+  {
+    id: 'onchain-decrypt',
+    title: '链上解密教学',
+    icon: '⚡',
+    fallbackIcon: '⚡',
+    component: OnchainDecryption
   },
   {
     id: 'calculations',
@@ -427,6 +435,7 @@ function App() {
       'number-decrypt': '掌握从区块链读取和解密数字的方法',
       'address-storage': '体验以太坊地址的加密存储',
       'address-decrypt': '练习地址数据的解密操作',
+      'onchain-decrypt': '学习requestDecryption链上异步解密',
       'calculations': '探索同态加密计算的强大功能'
     }
     return descriptions[chapterId] || ''
