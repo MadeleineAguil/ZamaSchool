@@ -26,6 +26,25 @@
         "internalType": "address",
         "name": "user",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "comparisonType",
+        "type": "string"
+      }
+    ],
+    "name": "ComparisonPerformed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
       }
     ],
     "name": "NumberStored",
@@ -70,6 +89,119 @@
   {
     "inputs": [
       {
+        "internalType": "externalEuint32",
+        "name": "inputNumber",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "compareStoredNumberEqual",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "externalEuint32",
+        "name": "inputNumber",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "compareStoredNumberGreater",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "externalEuint32",
+        "name": "inputNumber",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "compareStoredNumberGreaterOrEqual",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "externalEuint32",
+        "name": "inputNumber",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "compareStoredNumberLess",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "externalEuint32",
+        "name": "inputNumber",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "compareStoredNumberLessOrEqual",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userA",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "userB",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "comparisonType",
+        "type": "string"
+      }
+    ],
+    "name": "compareTwoUsersNumbers",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint32",
         "name": "divisor",
         "type": "uint32"
@@ -81,7 +213,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
     "name": "getCalculationResult",
     "outputs": [
       {
@@ -94,11 +232,17 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getStoredNumber",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getComparisonResult",
     "outputs": [
       {
-        "internalType": "euint32",
+        "internalType": "ebool",
         "name": "",
         "type": "bytes32"
       }

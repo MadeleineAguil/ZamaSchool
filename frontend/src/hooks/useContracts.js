@@ -145,6 +145,25 @@ export const useNumberStorage = () => {
     }
   }
 
+  // 通用写合约方法
+  const writeContract = async ({ functionName, args = [] }) => {
+    if (!signer || !contractAddress) return
+    setIsWriting(true)
+    try {
+      const signerPromise = await signer
+      const contract = new Contract(contractAddress, NumberStorageABI, signerPromise)
+      const tx = await contract[functionName](...args)
+      setWriteData(tx)
+      await tx.wait()
+      return tx
+    } catch (error) {
+      console.error(`Error calling ${functionName}:`, error)
+      throw error
+    } finally {
+      setIsWriting(false)
+    }
+  }
+
   return {
     contractAddress,
     // 存储相关
@@ -161,6 +180,8 @@ export const useNumberStorage = () => {
     subtractFromStoredNumber,
     multiplyStoredNumber,
     divideStoredNumber,
+    // 通用写合约方法
+    writeContract,
     // 写合约状态
     isWriting,
     writeData

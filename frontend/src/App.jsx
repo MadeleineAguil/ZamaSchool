@@ -12,6 +12,7 @@ import AddressStorage from './components/AddressStorage'
 import AddressDecryption from './components/AddressDecryption'
 import OnchainDecryption from './components/OnchainDecryption'
 import FHECalculations from './components/FHECalculations'
+import NumberComparison from './components/NumberComparison'
 
 // 导入Context
 import { FHEVMProvider } from './contexts/FHEVMContext'
@@ -80,6 +81,13 @@ const chapters = [
     icon: '🧮',
     fallbackIcon: '★',
     component: FHECalculations
+  },
+  {
+    id: 'number-comparison',
+    title: '加密数字比较',
+    icon: '⚖️',
+    fallbackIcon: '⚖',
+    component: NumberComparison
   },
   {
     id: 'conclusion',
@@ -446,7 +454,8 @@ function App() {
       'address-storage': '体验以太坊地址的加密存储',
       'address-decrypt': '练习地址数据的解密操作',
       'onchain-decrypt': '学习requestDecryption链上异步解密',
-      'calculations': '探索同态加密计算的强大功能'
+      'calculations': '探索同态加密计算的强大功能',
+      'number-comparison': '学习加密数字的比较运算和条件判断'
     }
     return descriptions[chapterId] || ''
   }
