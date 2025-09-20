@@ -22,16 +22,12 @@ contract NumberStorage is SepoliaConfig {
         emit NumberStored(msg.sender);
     }
 
-    function getStoredNumber() external view returns (euint32) {
-        return userNumbers[msg.sender];
-    }
-
     function getStoredNumberByUser(address user) external view returns (euint32) {
         return userNumbers[user];
     }
 
-    function getCalculationResult() external view returns (euint32) {
-        return calculationResults[msg.sender];
+    function getCalculationResult(address user) external view returns (euint32) {
+        return calculationResults[user];
     }
 
     // 加法运算

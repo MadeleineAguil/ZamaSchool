@@ -23,24 +23,6 @@ contract AddressStorage is SepoliaConfig {
         emit AddressStored(msg.sender);
     }
 
-    function storeRandomAddress() external {
-        // 生成随机地址 - 由于直接的randEaddress可能不支持，
-        // 我们使用一个预定义的地址作为示例
-        address randomAddr = address(uint160(uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, block.difficulty)))));
-        eaddress randomAddress = FHE.asEaddress(randomAddr);
-
-        userAddresses[msg.sender] = randomAddress;
-
-        FHE.allowThis(userAddresses[msg.sender]);
-        FHE.allow(userAddresses[msg.sender], msg.sender);
-
-        emit AddressStored(msg.sender);
-    }
-
-    function getStoredAddress() external view returns (eaddress) {
-        return userAddresses[msg.sender];
-    }
-
     function getStoredAddressByUser(address user) external view returns (eaddress) {
         return userAddresses[user];
     }
