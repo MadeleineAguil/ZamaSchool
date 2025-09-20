@@ -116,17 +116,18 @@ function App() {
   const renderSidebar = () => (
     <div style={{
       width: '280px',
-      minHeight: '100vh',
+      height: '100vh',
       backgroundColor: '#f8f9fa',
       borderRight: '1px solid #dee2e6',
       padding: '20px 0',
       position: 'fixed',
       top: '0',
       left: '0',
-      overflowY: 'auto'
+      overflowY: 'auto',
+      boxSizing: 'border-box'
     }}>
       <div style={{ padding: '0 20px', marginBottom: '30px' }}>
-        <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>📚 学习目录</h3>
+        <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>📚 Zama学习目录</h3>
         <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
           点击章节开始学习
         </p>
