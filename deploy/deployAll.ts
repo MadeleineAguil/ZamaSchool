@@ -20,9 +20,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
   });
 
+  // 部署 OnchainDecryption 合约
+  const deployedOnchainDecryption = await deploy("OnchainDecryption", {
+    from: deployer,
+    log: true,
+  });
+
   console.log("\n=== Deployment Summary ===");
   console.log(`NumberStorage contract: ${deployedNumberStorage.address}`);
   console.log(`AddressStorage contract: ${deployedAddressStorage.address}`);
+  console.log(`OnchainDecryption contract: ${deployedOnchainDecryption.address}`);
   console.log("===========================\n");
 };
 
