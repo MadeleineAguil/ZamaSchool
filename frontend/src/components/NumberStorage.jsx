@@ -56,9 +56,10 @@ const NumberStorage = () => {
 
     try {
       // 调用合约存储加密数字
-      storeNumber({
+      await storeNumber({
         args: [encryptedData.handle, encryptedData.inputProof]
       })
+      alert('数字存储成功！')
     } catch (error) {
       console.error('存储失败:', error)
       alert('存储失败: ' + error.message)
