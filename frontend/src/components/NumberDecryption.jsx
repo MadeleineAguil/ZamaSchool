@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
-import { getContractAddress } from '../config/contracts'
+import { useNumberStorage } from '../hooks/useContracts'
 
 const NumberDecryption = () => {
   const { instance, isInitialized } = useFHEVM()
@@ -11,8 +11,13 @@ const NumberDecryption = () => {
   const [decryptedValue, setDecryptedValue] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
 
-  // 合约地址
-  const CONTRACT_ADDRESS = getContractAddress('NumberStorage', chainId)
+  // 使用NumberStorage合约钩子
+  const {
+    contractAddress: CONTRACT_ADDRESS,
+    storedNumber,
+    isGettingStored,
+    getStoredError
+  } = useNumberStorage()
 
   const handleDecryptNumber = async () => {
     if (!instance || !ciphertextHandle || !address || !walletClient) {
@@ -80,12 +85,17 @@ const NumberDecryption = () => {
   }
 
   const handleFetchFromContract = async () => {
-    // 模拟从合约获取用户的加密数字
+    // 从合约获取用户的加密数字
     try {
-      // 这里将调用合约的getStoredNumber函数
-      const mockHandle = '0x830a61b343d2f3de67ec59cb18961fd086085c1c73ff0000000000aa36a70000'
-      setCiphertextHandle(mockHandle)
-      console.log('已从合约获取密文句柄')
+      if (!storedNumber) {
+        alert('您还没有在合约中存储数字，请先前往步骤2存储数字')
+        return
+      }
+
+      // 将storedNumber转换为字符串句柄
+      const handle = storedNumber.toString()
+      setCiphertextHandle(handle)
+      console.log('已从合约获取密文句柄:', handle)
     } catch (error) {
       console.error('获取失败:', error)
       alert('获取失败: ' + error.message)
@@ -179,19 +189,40 @@ const decryptData = async (ciphertextHandle) => {
 
       <div style={{ marginBottom: '20px' }}>
         <h4>步骤1: 获取你的加密数字</h4>
+
+        {isGettingStored && (
+          <div style={{ padding: '10px', backgroundColor: '#f0f8ff', borderRadius: '4px', marginBottom: '10px' }}>
+            ⏳ 正在从合约获取数字数据...
+          </div>
+        )}
+
+        {getStoredError && (
+          <div style={{ padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px', marginBottom: '10px' }}>
+            ❌ 获取数字失败，请检查网络连接
+          </div>
+        )}
+
         <button
           onClick={handleFetchFromContract}
+          disabled={isGettingStored || !address}
           style={{
             padding: '10px 20px',
-            backgroundColor: '#FF9800',
+            backgroundColor: storedNumber ? '#4CAF50' : '#FF9800',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            opacity: (!address || isGettingStored) ? 0.6 : 1
           }}
         >
-          从合约获取我的加密数字
+          {storedNumber ? '✅ 从合约获取我的加密数字' : '从合约获取我的加密数字'}
         </button>
+
+        {!storedNumber && !isGettingStored && !getStoredError && (
+          <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+            💡 提示：如果没有存储数字，请先前往步骤2存储一个数字
+          </p>
+        )}
       </div>
 
       {ciphertextHandle && (

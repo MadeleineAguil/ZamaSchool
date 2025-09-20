@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
-import { getContractAddress } from '../config/contracts'
+import { useAddressStorage } from '../hooks/useContracts'
 
 const AddressDecryption = () => {
   const { instance, isInitialized } = useFHEVM()
@@ -11,8 +11,13 @@ const AddressDecryption = () => {
   const [decryptedAddress, setDecryptedAddress] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
 
-  // 合约地址
-  const CONTRACT_ADDRESS = getContractAddress('AddressStorage', chainId)
+  // 使用AddressStorage合约钩子
+  const {
+    contractAddress: CONTRACT_ADDRESS,
+    storedAddress,
+    isGettingStored,
+    getStoredError
+  } = useAddressStorage()
 
   const handleDecryptAddress = async () => {
     if (!instance || !ciphertextHandle || !address || !walletClient) {
@@ -80,12 +85,17 @@ const AddressDecryption = () => {
   }
 
   const handleFetchFromContract = async () => {
-    // 模拟从合约获取用户的加密地址
+    // 从合约获取用户的加密地址
     try {
-      // 这里将调用合约的getStoredAddress函数
-      const mockHandle = '0x742d35cc6635c0532925a3b8d61267f10e3cc82700ff0000000000aa36a70300'
-      setCiphertextHandle(mockHandle)
-      console.log('已从合约获取地址密文句柄')
+      if (!storedAddress) {
+        alert('您还没有在合约中存储地址，请先前往步骤4存储地址')
+        return
+      }
+
+      // 将storedAddress转换为字符串句柄
+      const handle = storedAddress.toString()
+      setCiphertextHandle(handle)
+      console.log('已从合约获取地址密文句柄:', handle)
     } catch (error) {
       console.error('获取失败:', error)
       alert('获取失败: ' + error.message)
@@ -203,19 +213,40 @@ const isValidAddress = (addr) => {
 
       <div style={{ marginBottom: '20px' }}>
         <h4>步骤1: 获取你的加密地址</h4>
+
+        {isGettingStored && (
+          <div style={{ padding: '10px', backgroundColor: '#f0f8ff', borderRadius: '4px', marginBottom: '10px' }}>
+            ⏳ 正在从合约获取地址数据...
+          </div>
+        )}
+
+        {getStoredError && (
+          <div style={{ padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px', marginBottom: '10px' }}>
+            ❌ 获取地址失败，请检查网络连接
+          </div>
+        )}
+
         <button
           onClick={handleFetchFromContract}
+          disabled={isGettingStored || !address}
           style={{
             padding: '10px 20px',
-            backgroundColor: '#FF9800',
+            backgroundColor: storedAddress ? '#4CAF50' : '#FF9800',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            opacity: (!address || isGettingStored) ? 0.6 : 1
           }}
         >
-          从合约获取我的加密地址
+          {storedAddress ? '✅ 从合约获取我的加密地址' : '从合约获取我的加密地址'}
         </button>
+
+        {!storedAddress && !isGettingStored && !getStoredError && (
+          <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+            💡 提示：如果没有存储地址，请先前往步骤4存储一个地址
+          </p>
+        )}
       </div>
 
       {ciphertextHandle && (
