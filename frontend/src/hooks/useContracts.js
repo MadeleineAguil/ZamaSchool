@@ -287,43 +287,6 @@ export const useOnchainDecryption = () => {
     }
   }
 
-  // 存储加密布尔值
-  const storeEncryptedBoolean = async (encryptedBool) => {
-    if (!signer || !contractAddress) return
-    setIsWriting(true)
-    try {
-      const signerPromise = await signer
-      const contract = new Contract(contractAddress, OnchainDecryptionABI, signerPromise)
-      const tx = await contract.storeEncryptedBoolean(encryptedBool)
-      setWriteData(tx)
-      await tx.wait()
-      return tx
-    } catch (error) {
-      console.error('Error storing encrypted boolean:', error)
-      throw error
-    } finally {
-      setIsWriting(false)
-    }
-  }
-
-  // 存储加密地址
-  const storeEncryptedAddress = async (encryptedAddress) => {
-    if (!signer || !contractAddress) return
-    setIsWriting(true)
-    try {
-      const signerPromise = await signer
-      const contract = new Contract(contractAddress, OnchainDecryptionABI, signerPromise)
-      const tx = await contract.storeEncryptedAddress(encryptedAddress)
-      setWriteData(tx)
-      await tx.wait()
-      return tx
-    } catch (error) {
-      console.error('Error storing encrypted address:', error)
-      throw error
-    } finally {
-      setIsWriting(false)
-    }
-  }
 
   // 请求解密数字
   const requestDecryptNumber = async () => {
@@ -344,62 +307,6 @@ export const useOnchainDecryption = () => {
     }
   }
 
-  // 请求解密布尔值
-  const requestDecryptBoolean = async () => {
-    if (!signer || !contractAddress) return
-    setIsWriting(true)
-    try {
-      const signerPromise = await signer
-      const contract = new Contract(contractAddress, OnchainDecryptionABI, signerPromise)
-      const tx = await contract.requestDecryptBoolean()
-      setWriteData(tx)
-      await tx.wait()
-      return tx
-    } catch (error) {
-      console.error('Error requesting decrypt boolean:', error)
-      throw error
-    } finally {
-      setIsWriting(false)
-    }
-  }
-
-  // 请求解密地址
-  const requestDecryptAddress = async () => {
-    if (!signer || !contractAddress) return
-    setIsWriting(true)
-    try {
-      const signerPromise = await signer
-      const contract = new Contract(contractAddress, OnchainDecryptionABI, signerPromise)
-      const tx = await contract.requestDecryptAddress()
-      setWriteData(tx)
-      await tx.wait()
-      return tx
-    } catch (error) {
-      console.error('Error requesting decrypt address:', error)
-      throw error
-    } finally {
-      setIsWriting(false)
-    }
-  }
-
-  // 请求批量解密
-  const requestBatchDecryption = async () => {
-    if (!signer || !contractAddress) return
-    setIsWriting(true)
-    try {
-      const signerPromise = await signer
-      const contract = new Contract(contractAddress, OnchainDecryptionABI, signerPromise)
-      const tx = await contract.requestBatchDecryption()
-      setWriteData(tx)
-      await tx.wait()
-      return tx
-    } catch (error) {
-      console.error('Error requesting batch decryption:', error)
-      throw error
-    } finally {
-      setIsWriting(false)
-    }
-  }
 
   // 重置解密状态
   const resetDecryptionState = async () => {
@@ -424,13 +331,8 @@ export const useOnchainDecryption = () => {
     contractAddress,
     // 存储相关
     storeEncryptedNumber,
-    storeEncryptedBoolean,
-    storeEncryptedAddress,
     // 解密请求相关
     requestDecryptNumber,
-    requestDecryptBoolean,
-    requestDecryptAddress,
-    requestBatchDecryption,
     // 状态管理
     resetDecryptionState,
     decryptionStatus,

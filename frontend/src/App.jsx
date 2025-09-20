@@ -48,35 +48,35 @@ const chapters = [
   },
   {
     id: 'number-decrypt',
-    title: '数字解密读取',
+    title: '数字解密',
     icon: '🔓',
     fallbackIcon: '◆',
     component: NumberDecryption
   },
   {
     id: 'address-storage',
-    title: '地址加密存储',
+    title: 'address加密存储',
     icon: '📧',
     fallbackIcon: '▼',
     component: AddressStorage
   },
   {
     id: 'address-decrypt',
-    title: '地址解密读取',
+    title: 'address解密',
     icon: '🔍',
     fallbackIcon: '◉',
     component: AddressDecryption
   },
   {
     id: 'onchain-decrypt',
-    title: '链上解密教学',
+    title: '链上解密请求',
     icon: '⚡',
     fallbackIcon: '⚡',
     component: OnchainDecryption
   },
   {
     id: 'calculations',
-    title: 'FHE计算',
+    title: 'FHE加密计算',
     icon: '🧮',
     fallbackIcon: '★',
     component: FHECalculations

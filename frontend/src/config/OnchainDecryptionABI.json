@@ -25,9 +25,9 @@
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "dataType",
-        "type": "string"
+        "internalType": "uint32",
+        "name": "decryptedValue",
+        "type": "uint32"
       }
     ],
     "name": "DecryptionCompleted",
@@ -60,12 +60,6 @@
         "internalType": "uint256",
         "name": "requestId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "dataType",
-        "type": "string"
       }
     ],
     "name": "DecryptionRequested",
@@ -79,103 +73,10 @@
         "internalType": "address",
         "name": "user",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "dataType",
-        "type": "string"
       }
     ],
     "name": "NumberStored",
     "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "cleartexts",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "decryptionProof",
-        "type": "bytes"
-      }
-    ],
-    "name": "callbackBatchDecryption",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "cleartexts",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "decryptionProof",
-        "type": "bytes"
-      }
-    ],
-    "name": "callbackDecryptAddress",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "cleartexts",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "decryptionProof",
-        "type": "bytes"
-      }
-    ],
-    "name": "callbackDecryptBoolean",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
   },
   {
     "inputs": [
@@ -204,44 +105,6 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "decryptedAddresses",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "decryptedBooleans",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -287,16 +150,6 @@
         "internalType": "uint32",
         "name": "decryptedNumber",
         "type": "uint32"
-      },
-      {
-        "internalType": "bool",
-        "name": "decryptedBoolean",
-        "type": "bool"
-      },
-      {
-        "internalType": "address",
-        "name": "decryptedAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -310,21 +163,11 @@
         "type": "address"
       }
     ],
-    "name": "getEncryptedData",
+    "name": "getEncryptedNumber",
     "outputs": [
       {
         "internalType": "euint32",
-        "name": "encryptedNumber",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "ebool",
-        "name": "encryptedBoolean",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "eaddress",
-        "name": "encryptedAddress",
+        "name": "",
         "type": "bytes32"
       }
     ],
@@ -339,21 +182,11 @@
         "type": "address"
       }
     ],
-    "name": "hasEncryptedData",
+    "name": "hasEncryptedNumber",
     "outputs": [
       {
         "internalType": "bool",
-        "name": "hasNumber",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "hasBoolean",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "hasAddress",
+        "name": "",
         "type": "bool"
       }
     ],
@@ -394,45 +227,6 @@
   },
   {
     "inputs": [],
-    "name": "requestBatchDecryption",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "requestDecryptAddress",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "requestDecryptBoolean",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "requestDecryptNumber",
     "outputs": [
       {
@@ -447,32 +241,6 @@
   {
     "inputs": [],
     "name": "resetDecryptionState",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "eaddress",
-        "name": "_encryptedAddress",
-        "type": "bytes32"
-      }
-    ],
-    "name": "storeEncryptedAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "ebool",
-        "name": "_encryptedBool",
-        "type": "bytes32"
-      }
-    ],
-    "name": "storeEncryptedBoolean",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
