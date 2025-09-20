@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
+import { getContractAddress } from '../config/contracts'
 
 const NumberDecryption = () => {
   const { instance, isInitialized } = useFHEVM()
-  const { address } = useAccount()
+  const { address, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
   const [isDecrypting, setIsDecrypting] = useState(false)
   const [decryptedValue, setDecryptedValue] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
 
-  // 合约地址（需要部署后更新）
-  const CONTRACT_ADDRESS = '0x...' // 将在部署后填入真实地址
+  // 合约地址
+  const CONTRACT_ADDRESS = getContractAddress('NumberStorage', chainId)
 
   const handleDecryptNumber = async () => {
     if (!instance || !ciphertextHandle || !address || !walletClient) {

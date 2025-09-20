@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi'
 import './App.css'
 
 // 导入组件
+import ZamaIntro from './components/ZamaIntro'
 import SDKDemo from './components/SDKDemo'
 import NumberStorage from './components/NumberStorage'
 import NumberDecryption from './components/NumberDecryption'
@@ -23,6 +24,13 @@ const chapters = [
     icon: '🏠',
     fallbackIcon: '■',
     component: null
+  },
+  {
+    id: 'zama-intro',
+    title: 'Zama技术介绍',
+    icon: '🔐',
+    fallbackIcon: '♦',
+    component: ZamaIntro
   },
   {
     id: 'sdk',
@@ -430,6 +438,7 @@ function App() {
   // 获取章节描述
   const getChapterDescription = (chapterId) => {
     const descriptions = {
+      'zama-intro': '深入了解Zama FHE技术原理和架构',
       'sdk': '了解Zama前端SDK的基本概念和配置',
       'number-storage': '学习如何加密数字并存储到区块链',
       'number-decrypt': '掌握从区块链读取和解密数字的方法',

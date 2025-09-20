@@ -2,18 +2,19 @@ import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount } from 'wagmi'
 import { isAddress } from 'viem'
+import { getContractAddress } from '../config/contracts'
 
 const AddressStorage = () => {
   const { instance, isInitialized } = useFHEVM()
-  const { address } = useAccount()
+  const { address, chainId } = useAccount()
   const [inputAddress, setInputAddress] = useState('')
   const [isEncrypting, setIsEncrypting] = useState(false)
   const [encryptedData, setEncryptedData] = useState(null)
   const [txHash, setTxHash] = useState('')
   const [useRandomAddress, setUseRandomAddress] = useState(false)
 
-  // 合约地址（需要部署后更新）
-  const CONTRACT_ADDRESS = '0x...' // 将在部署后填入真实地址
+  // 合约地址
+  const CONTRACT_ADDRESS = getContractAddress('AddressStorage', chainId)
 
   const generateRandomAddress = () => {
     // 生成一个随机的以太坊地址

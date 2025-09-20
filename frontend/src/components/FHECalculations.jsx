@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
+import { getContractAddress } from '../config/contracts'
 
 const FHECalculations = () => {
   const { instance, isInitialized } = useFHEVM()
-  const { address } = useAccount()
+  const { address, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
   const [operationNumber, setOperationNumber] = useState('')
   const [divisor, setDivisor] = useState('')
@@ -13,8 +14,8 @@ const FHECalculations = () => {
   const [calculationResult, setCalculationResult] = useState(null)
   const [currentStoredNumber, setCurrentStoredNumber] = useState(null)
 
-  // 合约地址（需要部署后更新）
-  const CONTRACT_ADDRESS = '0x...' // 将在部署后填入真实地址
+  // 合约地址
+  const CONTRACT_ADDRESS = getContractAddress('NumberStorage', chainId)
 
   const operations = [
     { value: 'add', label: '加法 (+)', description: '将你的存储数字与新数字相加' },
