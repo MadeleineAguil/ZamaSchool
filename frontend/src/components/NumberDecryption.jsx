@@ -114,6 +114,66 @@ const NumberDecryption = () => {
           <li>学习用户解密过程</li>
           <li>理解密钥对生成和签名</li>
         </ul>
+
+        <div style={{ marginTop: '15px' }}>
+          <h5>📝 智能合约读取代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 从合约读取加密数据
+function getStoredNumber() external view returns (euint32) {
+    return userNumbers[msg.sender];
+}
+
+// 获取其他用户的加密数据（需要权限）
+function getStoredNumberByUser(address user) external view returns (euint32) {
+    return userNumbers[user];
+}`}</pre>
+          </div>
+
+          <h5>📝 前端解密代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 用户解密流程
+const decryptData = async (ciphertextHandle) => {
+  // 1. 生成临时密钥对
+  const keypair = instance.generateKeypair()
+
+  // 2. 准备解密请求
+  const handleContractPairs = [{
+    handle: ciphertextHandle,
+    contractAddress: CONTRACT_ADDRESS
+  }]
+
+  // 3. 创建EIP712签名数据
+  const eip712 = instance.createEIP712(
+    keypair.publicKey,
+    [CONTRACT_ADDRESS],
+    timestamp,
+    duration
+  )
+
+  // 4. 用户签名授权
+  const signature = await walletClient.signTypedData({
+    domain: eip712.domain,
+    types: { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
+    primaryType: 'UserDecryptRequestVerification',
+    message: eip712.message
+  })
+
+  // 5. 执行解密
+  const result = await instance.userDecrypt(
+    handleContractPairs,
+    keypair.privateKey,
+    keypair.publicKey,
+    signature.replace("0x", ""),
+    [CONTRACT_ADDRESS],
+    userAddress,
+    timestamp,
+    duration
+  )
+
+  return result[ciphertextHandle]
+}`}</pre>
+          </div>
+        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>

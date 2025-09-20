@@ -12,6 +12,14 @@ body {
   background-color: #ffffff;
 }
 
+/* 确保表情符号正确显示 */
+.emoji, .chapter-icon {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", "EmojiSymbols", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: auto;
+}
+
 #root {
   min-height: 100vh;
 }

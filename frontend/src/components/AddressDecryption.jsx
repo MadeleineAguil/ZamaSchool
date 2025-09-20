@@ -118,6 +118,86 @@ const AddressDecryption = () => {
           <li>解密eaddress类型数据</li>
           <li>验证解密后的地址格式</li>
         </ul>
+
+        <div style={{ marginTop: '15px' }}>
+          <h5>📝 智能合约查询代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 获取加密地址的合约函数
+function getStoredAddress() external view returns (eaddress) {
+    return userAddresses[msg.sender];
+}
+
+// 获取其他用户的加密地址（需要权限）
+function getStoredAddressByUser(address user) external view returns (eaddress) {
+    return userAddresses[user];
+}
+
+// 比较两个加密地址（返回比较结果）
+function compareAddresses(address userA, address userB)
+    external view returns (eaddress) {
+    require(FHE.isInitialized(userAddresses[userA]), "UserA no address");
+    require(FHE.isInitialized(userAddresses[userB]), "UserB no address");
+
+    // 这里可以返回比较结果或其中一个地址
+    return userAddresses[userA];
+}`}</pre>
+          </div>
+
+          <h5>📝 前端地址解密代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 地址解密完整流程
+const decryptAddress = async (addressHandle) => {
+  // 1. 生成解密密钥对
+  const keypair = instance.generateKeypair()
+
+  // 2. 准备解密请求
+  const handleContractPairs = [{
+    handle: addressHandle,
+    contractAddress: CONTRACT_ADDRESS
+  }]
+
+  // 3. 创建时间戳和有效期
+  const startTimeStamp = Math.floor(Date.now() / 1000).toString()
+  const durationDays = "10"
+
+  // 4. 创建EIP712签名数据
+  const eip712 = instance.createEIP712(
+    keypair.publicKey,
+    [CONTRACT_ADDRESS],
+    startTimeStamp,
+    durationDays
+  )
+
+  // 5. 用户签名
+  const signature = await walletClient.signTypedData({
+    domain: eip712.domain,
+    types: { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
+    primaryType: 'UserDecryptRequestVerification',
+    message: eip712.message
+  })
+
+  // 6. 执行解密
+  const result = await instance.userDecrypt(
+    handleContractPairs,
+    keypair.privateKey,
+    keypair.publicKey,
+    signature.replace("0x", ""),
+    [CONTRACT_ADDRESS],
+    userAddress,
+    startTimeStamp,
+    durationDays
+  )
+
+  // 7. 返回解密后的地址
+  return result[addressHandle]
+}
+
+// 验证地址格式
+const isValidAddress = (addr) => {
+  return /^0x[a-fA-F0-9]{40}$/.test(addr)
+}`}</pre>
+          </div>
+        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>

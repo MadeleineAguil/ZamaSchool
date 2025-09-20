@@ -114,6 +114,82 @@ const AddressStorage = () => {
           <li>了解随机地址生成</li>
           <li>掌握eaddress数据类型的使用</li>
         </ul>
+
+        <div style={{ marginTop: '15px' }}>
+          <h5>📝 智能合约代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// AddressStorage.sol
+contract AddressStorage is SepoliaConfig {
+    mapping(address => eaddress) private userAddresses;
+
+    event AddressStored(address indexed user);
+
+    // 存储用户提供的加密地址
+    function storeAddress(
+        externalEaddress inputAddress,
+        bytes calldata inputProof
+    ) external {
+        eaddress encryptedAddress = FHE.fromExternal(inputAddress, inputProof);
+
+        userAddresses[msg.sender] = encryptedAddress;
+
+        FHE.allowThis(userAddresses[msg.sender]);
+        FHE.allow(userAddresses[msg.sender], msg.sender);
+
+        emit AddressStored(msg.sender);
+    }
+
+    // 生成并存储随机地址
+    function storeRandomAddress() external {
+        // 生成随机地址
+        address randomAddr = address(uint160(uint256(
+            keccak256(abi.encodePacked(
+                block.timestamp,
+                msg.sender,
+                block.difficulty
+            ))
+        )));
+        eaddress randomAddress = FHE.asEaddress(randomAddr);
+
+        userAddresses[msg.sender] = randomAddress;
+
+        FHE.allowThis(userAddresses[msg.sender]);
+        FHE.allow(userAddresses[msg.sender], msg.sender);
+
+        emit AddressStored(msg.sender);
+    }
+
+    function getStoredAddress() external view returns (eaddress) {
+        return userAddresses[msg.sender];
+    }
+}`}</pre>
+          </div>
+
+          <h5>📝 前端地址加密代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 加密地址的两种方式
+
+// 方式1: 加密用户输入的地址
+const encryptUserAddress = async (address) => {
+  const input = instance.createEncryptedInput(contractAddress, userAddress)
+  input.addAddress(address)  // 添加地址类型数据
+
+  const encryptedInput = await input.encrypt()
+
+  // 调用合约存储
+  await contract.storeAddress(
+    encryptedInput.handles[0],
+    encryptedInput.inputProof
+  )
+}
+
+// 方式2: 使用合约生成随机地址
+const storeRandomAddress = async () => {
+  // 直接调用合约函数，无需前端加密
+  await contract.storeRandomAddress()
+}`}</pre>
+          </div>
+        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>

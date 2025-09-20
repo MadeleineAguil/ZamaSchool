@@ -35,6 +35,31 @@ const SDKDemo = () => {
           <li>与智能合约无缝集成</li>
           <li>保护用户数据隐私</li>
         </ul>
+
+        <div style={{ marginTop: '15px' }}>
+          <h5>📝 前端代码示例:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 1. 导入SDK
+import { createInstance, SepoliaConfig } from '@zama-fhe/relayer-sdk'
+
+// 2. 创建FHEVM实例
+const instance = await createInstance({
+  ...SepoliaConfig,
+  network: window.ethereum
+})
+
+// 3. 创建加密输入
+const input = instance.createEncryptedInput(contractAddress, userAddress)
+input.add32(42)  // 加密一个32位数字
+const encryptedInput = await input.encrypt()
+
+// 4. 调用合约方法
+await contract.storeNumber(
+  encryptedInput.handles[0],
+  encryptedInput.inputProof
+)`}</pre>
+          </div>
+        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>

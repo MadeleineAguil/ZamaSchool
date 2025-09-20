@@ -18,50 +18,58 @@ import { FHEVMProvider } from './contexts/FHEVMContext'
 const chapters = [
   {
     id: 'intro',
-    title: '🏠 课程介绍',
+    title: '课程介绍',
     icon: '🏠',
+    fallbackIcon: '■',
     component: null
   },
   {
     id: 'sdk',
-    title: '📦 SDK介绍',
+    title: 'SDK介绍',
     icon: '📦',
+    fallbackIcon: '▲',
     component: SDKDemo
   },
   {
     id: 'number-storage',
-    title: '🔢 数字加密存储',
+    title: '数字加密存储',
     icon: '🔢',
+    fallbackIcon: '●',
     component: NumberStorage
   },
   {
     id: 'number-decrypt',
-    title: '🔓 数字解密读取',
+    title: '数字解密读取',
     icon: '🔓',
+    fallbackIcon: '◆',
     component: NumberDecryption
   },
   {
     id: 'address-storage',
-    title: '📧 地址加密存储',
+    title: '地址加密存储',
     icon: '📧',
+    fallbackIcon: '▼',
     component: AddressStorage
   },
   {
     id: 'address-decrypt',
-    title: '🔍 地址解密读取',
+    title: '地址解密读取',
     icon: '🔍',
+    fallbackIcon: '◉',
     component: AddressDecryption
   },
   {
     id: 'calculations',
-    title: '🧮 FHE计算',
+    title: 'FHE计算',
     icon: '🧮',
+    fallbackIcon: '★',
     component: FHECalculations
   },
   {
     id: 'conclusion',
-    title: '🎉 学习总结',
+    title: '学习总结',
     icon: '🎉',
+    fallbackIcon: '✓',
     component: null
   }
 ]
@@ -69,6 +77,24 @@ const chapters = [
 function App() {
   const { address, isConnected } = useAccount()
   const [currentChapter, setCurrentChapter] = useState('intro')
+
+  // 渲染章节图标
+  const renderChapterIcon = (chapter, size = '20px') => {
+    return (
+      <span
+        className="chapter-icon emoji-support"
+        style={{
+          fontSize: size,
+          display: 'inline-block',
+          minWidth: size,
+          textAlign: 'center',
+          fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", "EmojiSymbols", sans-serif'
+        }}
+      >
+        {chapter.icon}
+      </span>
+    )
+  }
 
   // 渲染侧边栏
   const renderSidebar = () => (
@@ -120,13 +146,13 @@ function App() {
               <span style={{ fontSize: '14px', fontWeight: '500', color: '#999' }}>
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span style={{ fontSize: '20px' }}>{chapter.icon}</span>
+              {renderChapterIcon(chapter, '20px')}
               <span style={{
                 fontSize: '14px',
                 fontWeight: currentChapter === chapter.id ? '600' : '400',
                 color: currentChapter === chapter.id ? '#2196F3' : '#333'
               }}>
-                {chapter.title.replace(/^[🏠📦🔢🔓📧🔍🧮🎉]\s*/, '')}
+                {chapter.title}
               </span>
             </div>
           </div>
@@ -181,8 +207,8 @@ function App() {
           {/* 当前章节标题 */}
           <div style={{ marginBottom: '30px' }}>
             <h2 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '28px' }}>{chapter.icon}</span>
-              {chapter.title.replace(/^[🏠📦🔢🔓📧🔍🧮🎉]\s*/, '')}
+              {renderChapterIcon(chapter, '28px')}
+              {chapter.title}
             </h2>
             <div style={{ height: '3px', width: '60px', backgroundColor: '#2196F3', borderRadius: '2px' }} />
           </div>
@@ -270,10 +296,10 @@ function App() {
               }}>
                 {index + 1}
               </div>
-              <span style={{ fontSize: '20px' }}>{chapter.icon}</span>
+              {renderChapterIcon(chapter, '20px')}
               <div>
                 <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                  {chapter.title.replace(/^[📦🔢🔓📧🔍🧮]\s*/, '')}
+                  {chapter.title}
                 </div>
                 <div style={{ fontSize: '14px', color: '#666' }}>
                   {getChapterDescription(chapter.id)}

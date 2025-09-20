@@ -173,6 +173,147 @@ const FHECalculations = () => {
           <li>学习加密数据的运算操作</li>
           <li>掌握不同运算类型的使用方法</li>
         </ul>
+
+        <div style={{ marginTop: '15px' }}>
+          <h5>📝 智能合约FHE运算代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// NumberStorage.sol - FHE运算函数
+
+// 加法运算：密文 + 密文
+function addToStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
+    require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
+
+    euint32 numberToAdd = FHE.fromExternal(inputNumber, inputProof);
+    euint32 result = FHE.add(userNumbers[msg.sender], numberToAdd);
+
+    calculationResults[msg.sender] = result;
+    FHE.allowThis(calculationResults[msg.sender]);
+    FHE.allow(calculationResults[msg.sender], msg.sender);
+
+    emit CalculationPerformed(msg.sender, "addition");
+}
+
+// 减法运算：密文 - 密文
+function subtractFromStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
+    require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
+
+    euint32 numberToSubtract = FHE.fromExternal(inputNumber, inputProof);
+    euint32 result = FHE.sub(userNumbers[msg.sender], numberToSubtract);
+
+    calculationResults[msg.sender] = result;
+    FHE.allowThis(calculationResults[msg.sender]);
+    FHE.allow(calculationResults[msg.sender], msg.sender);
+
+    emit CalculationPerformed(msg.sender, "subtraction");
+}
+
+// 乘法运算：密文 × 密文
+function multiplyStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
+    require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
+
+    euint32 numberToMultiply = FHE.fromExternal(inputNumber, inputProof);
+    euint32 result = FHE.mul(userNumbers[msg.sender], numberToMultiply);
+
+    calculationResults[msg.sender] = result;
+    FHE.allowThis(calculationResults[msg.sender]);
+    FHE.allow(calculationResults[msg.sender], msg.sender);
+
+    emit CalculationPerformed(msg.sender, "multiplication");
+}
+
+// 除法运算：密文 ÷ 明文（除数必须是明文）
+function divideStoredNumber(uint32 divisor) external {
+    require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
+    require(divisor > 0, "Divisor must be greater than 0");
+
+    euint32 result = FHE.div(userNumbers[msg.sender], divisor);
+
+    calculationResults[msg.sender] = result;
+    FHE.allowThis(calculationResults[msg.sender]);
+    FHE.allow(calculationResults[msg.sender], msg.sender);
+
+    emit CalculationPerformed(msg.sender, "division");
+}
+
+// 两个用户数字相加（演示多用户交互）
+function addTwoStoredNumbers(address userA, address userB) external {
+    require(FHE.isInitialized(userNumbers[userA]), "UserA has no stored number");
+    require(FHE.isInitialized(userNumbers[userB]), "UserB has no stored number");
+
+    euint32 result = FHE.add(userNumbers[userA], userNumbers[userB]);
+
+    calculationResults[msg.sender] = result;
+    FHE.allowThis(calculationResults[msg.sender]);
+    FHE.allow(calculationResults[msg.sender], msg.sender);
+
+    emit CalculationPerformed(msg.sender, "add_two_users");
+}`}</pre>
+          </div>
+
+          <h5>📝 前端FHE计算调用代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// FHE计算操作的前端实现
+
+// 加密运算数（除法除外）
+const performFHECalculation = async (operation, operand) => {
+  let encryptedData = null;
+
+  if (operation !== 'divide') {
+    // 创建加密输入
+    const input = instance.createEncryptedInput(contractAddress, userAddress)
+    input.add32(parseInt(operand))
+    const encryptedInput = await input.encrypt()
+
+    encryptedData = {
+      handle: encryptedInput.handles[0],
+      inputProof: encryptedInput.inputProof
+    }
+  }
+
+  // 调用对应的合约函数
+  switch (operation) {
+    case 'add':
+      await contract.addToStoredNumber(
+        encryptedData.handle,
+        encryptedData.inputProof
+      )
+      break
+
+    case 'subtract':
+      await contract.subtractFromStoredNumber(
+        encryptedData.handle,
+        encryptedData.inputProof
+      )
+      break
+
+    case 'multiply':
+      await contract.multiplyStoredNumber(
+        encryptedData.handle,
+        encryptedData.inputProof
+      )
+      break
+
+    case 'divide':
+      // 除法运算：除数为明文，不需要加密
+      await contract.divideStoredNumber(parseInt(operand))
+      break
+  }
+}
+
+// 获取计算结果
+const getCalculationResult = async () => {
+  return await contract.getCalculationResult()
+}
+
+// 支持的FHE运算类型
+const fheOperations = {
+  arithmetic: ['add', 'sub', 'mul', 'div', 'rem'],  // 算术运算
+  comparison: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'], // 比较运算
+  bitwise: ['and', 'or', 'xor', 'not'],             // 位运算
+  special: ['min', 'max', 'select']                 // 特殊运算
+}`}</pre>
+          </div>
+        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>

@@ -88,6 +88,58 @@ const NumberStorage = () => {
           <li>了解加密数据的结构</li>
           <li>将加密数据存储到区块链</li>
         </ul>
+
+        <div style={{ marginTop: '15px' }}>
+          <h5>📝 智能合约代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// NumberStorage.sol
+contract NumberStorage is SepoliaConfig {
+    mapping(address => euint32) private userNumbers;
+
+    event NumberStored(address indexed user);
+
+    function storeNumber(
+        externalEuint32 inputNumber,
+        bytes calldata inputProof
+    ) external {
+        // 验证并转换外部加密输入
+        euint32 encryptedNumber = FHE.fromExternal(inputNumber, inputProof);
+
+        // 存储到用户映射
+        userNumbers[msg.sender] = encryptedNumber;
+
+        // 设置访问控制权限
+        FHE.allowThis(userNumbers[msg.sender]);
+        FHE.allow(userNumbers[msg.sender], msg.sender);
+
+        emit NumberStored(msg.sender);
+    }
+
+    function getStoredNumber() external view returns (euint32) {
+        return userNumbers[msg.sender];
+    }
+}`}</pre>
+          </div>
+
+          <h5>📝 前端加密代码:</h5>
+          <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 前端加密和存储
+const encryptAndStore = async () => {
+  // 1. 创建加密输入
+  const input = instance.createEncryptedInput(contractAddress, userAddress)
+  input.add32(parseInt(numberValue))  // 添加32位数字
+
+  // 2. 执行加密
+  const encryptedInput = await input.encrypt()
+
+  // 3. 调用合约存储
+  await contract.storeNumber(
+    encryptedInput.handles[0],    // 加密数据句柄
+    encryptedInput.inputProof     // 输入证明
+  )
+}`}</pre>
+          </div>
+        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
