@@ -1,19 +1,11 @@
-import { http, createConfig } from 'wagmi'
+import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { mainnet, sepolia } from 'wagmi/chains'
-import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors'
 
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'c4f79cc821944d9680842e34466bfbd'
 
-export const config = createConfig({
+export const config = getDefaultConfig({
+  appName: 'ZamaSchool',
+  projectId,
   chains: [mainnet, sepolia],
-  connectors: [
-    injected(),
-    walletConnect({ projectId }),
-    metaMask(),
-    safe(),
-  ],
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-  },
+  ssr: false, // If your dApp uses server side rendering (SSR)
 })
