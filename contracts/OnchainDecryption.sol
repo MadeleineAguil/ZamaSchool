@@ -24,6 +24,8 @@ contract OnchainDecryption is SepoliaConfig {
     event DecryptionRequested(address indexed user, uint256 requestId);
     event DecryptionCompleted(address indexed user, uint32 decryptedValue);
 
+    mapping (uint256=>address) public requestIds;
+
     /// @notice 存储加密的32位数字
     function storeEncryptedNumber(euint32 _encryptedNumber) external {
         userEncryptedNumbers[msg.sender] = _encryptedNumber;
@@ -53,7 +55,7 @@ contract OnchainDecryption is SepoliaConfig {
         // 更新状态
         isDecryptionPending[msg.sender] = true;
         latestRequestIds[msg.sender] = requestId;
-
+        requestIds[requestId]=msg.sender;
         emit DecryptionRequested(msg.sender, requestId);
 
         return requestId;
@@ -66,7 +68,7 @@ contract OnchainDecryption is SepoliaConfig {
         bytes memory decryptionProof
     ) public returns (bool) {
         // 验证请求ID
-        address user = getUserByRequestId(requestId);
+        address user = requestIds[requestId];
         require(user != address(0), "Invalid request ID");
         require(requestId == latestRequestIds[user], "Request ID mismatch");
 
