@@ -101,11 +101,105 @@ const chapters = [
 
 function LanguageSwitcher() {
   const { lang, setLang } = useI18n()
+
+  const buttonBaseStyle = {
+    padding: '8px 16px',
+    borderRadius: '8px',
+    border: '2px solid rgba(255,255,255,0.2)',
+    color: 'white',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '600',
+    transition: 'all 0.3s ease',
+    backdropFilter: 'blur(10px)',
+    minWidth: '65px',
+  }
+
+  const activeStyle = {
+    background: 'rgba(255,255,255,0.25)',
+    borderColor: 'rgba(255,255,255,0.4)',
+    transform: 'scale(1.05)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+  }
+
+  const inactiveStyle = {
+    background: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(255,255,255,0.15)',
+  }
+
   return (
-    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-      <button onClick={() => setLang('en')} style={{ padding: '4px 8px', borderRadius: '4px', border: 'none', background: lang === 'en' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', color: 'white', cursor: 'pointer' }}>EN</button>
-      <button onClick={() => setLang('zh')} style={{ padding: '4px 8px', borderRadius: '4px', border: 'none', background: lang === 'zh' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', color: 'white', cursor: 'pointer' }}>中文</button>
-      <button onClick={() => setLang('fr')} style={{ padding: '4px 8px', borderRadius: '4px', border: 'none', background: lang === 'fr' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', color: 'white', cursor: 'pointer' }}>FR</button>
+    <div style={{
+      display: 'flex',
+      gap: '10px',
+      alignItems: 'center',
+      padding: '4px',
+      background: 'rgba(255,255,255,0.08)',
+      borderRadius: '12px',
+      backdropFilter: 'blur(10px)',
+    }}>
+      <button
+        onClick={() => setLang('en')}
+        style={{
+          ...buttonBaseStyle,
+          ...(lang === 'en' ? activeStyle : inactiveStyle),
+        }}
+        onMouseEnter={(e) => {
+          if (lang !== 'en') {
+            e.target.style.background = 'rgba(255,255,255,0.18)'
+            e.target.style.transform = 'scale(1.02)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (lang !== 'en') {
+            e.target.style.background = 'rgba(255,255,255,0.1)'
+            e.target.style.transform = 'scale(1)'
+          }
+        }}
+      >
+        🇬🇧 EN
+      </button>
+      <button
+        onClick={() => setLang('zh')}
+        style={{
+          ...buttonBaseStyle,
+          ...(lang === 'zh' ? activeStyle : inactiveStyle),
+        }}
+        onMouseEnter={(e) => {
+          if (lang !== 'zh') {
+            e.target.style.background = 'rgba(255,255,255,0.18)'
+            e.target.style.transform = 'scale(1.02)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (lang !== 'zh') {
+            e.target.style.background = 'rgba(255,255,255,0.1)'
+            e.target.style.transform = 'scale(1)'
+          }
+        }}
+      >
+        🇨🇳 中文
+      </button>
+      <button
+        onClick={() => setLang('fr')}
+        style={{
+          ...buttonBaseStyle,
+          ...(lang === 'fr' ? activeStyle : inactiveStyle),
+        }}
+        onMouseEnter={(e) => {
+          if (lang !== 'fr') {
+            e.target.style.background = 'rgba(255,255,255,0.18)'
+            e.target.style.transform = 'scale(1.02)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (lang !== 'fr') {
+            e.target.style.background = 'rgba(255,255,255,0.1)'
+            e.target.style.transform = 'scale(1)'
+          }
+        }}
+      >
+        🇫🇷 FR
+      </button>
     </div>
   )
 }
