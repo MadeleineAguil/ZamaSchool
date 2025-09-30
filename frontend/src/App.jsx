@@ -16,91 +16,104 @@ import NumberComparison from './components/NumberComparison'
 
 // Import Context
 import { FHEVMProvider } from './contexts/FHEVMContext'
+import { I18nProvider, useI18n } from './contexts/I18nContext'
 
 // Chapter configuration
 const chapters = [
   {
     id: 'intro',
-    title: 'Course Introduction',
+    titleKey: 'chapter.intro',
     icon: '🏠',
     fallbackIcon: '■',
     component: null
   },
   {
     id: 'zama-intro',
-    title: 'Zama Technology Introduction',
+    titleKey: 'chapter.zama_intro',
     icon: '🔐',
     fallbackIcon: '♦',
     component: ZamaIntro
   },
   {
     id: 'sdk',
-    title: 'SDK Introduction',
+    titleKey: 'chapter.sdk',
     icon: '📦',
     fallbackIcon: '▲',
     component: SDKDemo
   },
   {
     id: 'number-storage',
-    title: 'Encrypted Number Storage',
+    titleKey: 'chapter.number_storage',
     icon: '🔢',
     fallbackIcon: '●',
     component: NumberStorage
   },
   {
     id: 'number-decrypt',
-    title: 'Number Decryption',
+    titleKey: 'chapter.number_decrypt',
     icon: '🔓',
     fallbackIcon: '◆',
     component: NumberDecryption
   },
   {
     id: 'address-storage',
-    title: 'Encrypted Address Storage',
+    titleKey: 'chapter.address_storage',
     icon: '📧',
     fallbackIcon: '▼',
     component: AddressStorage
   },
   {
     id: 'address-decrypt',
-    title: 'Address Decryption',
+    titleKey: 'chapter.address_decrypt',
     icon: '🔍',
     fallbackIcon: '◉',
     component: AddressDecryption
   },
   {
     id: 'onchain-decrypt',
-    title: 'Onchain Decryption Request',
+    titleKey: 'chapter.onchain_decrypt',
     icon: '⚡',
     fallbackIcon: '⚡',
     component: OnchainDecryption
   },
   {
     id: 'calculations',
-    title: 'FHE Encrypted Calculations',
+    titleKey: 'chapter.calculations',
     icon: '🧮',
     fallbackIcon: '★',
     component: FHECalculations
   },
   {
     id: 'number-comparison',
-    title: 'Encrypted Number Comparison',
+    titleKey: 'chapter.number_comparison',
     icon: '⚖️',
     fallbackIcon: '⚖',
     component: NumberComparison
   },
   {
     id: 'conclusion',
-    title: 'Learning Summary',
+    titleKey: 'chapter.conclusion',
     icon: '🎉',
     fallbackIcon: '✓',
     component: null
   }
 ]
 
-function App() {
+function LanguageSwitcher() {
+  const { lang, setLang } = useI18n()
+  return (
+    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <button onClick={() => setLang('en')} style={{ padding: '4px 8px', borderRadius: '4px', border: 'none', background: lang === 'en' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', color: 'white', cursor: 'pointer' }}>EN</button>
+      <button onClick={() => setLang('zh')} style={{ padding: '4px 8px', borderRadius: '4px', border: 'none', background: lang === 'zh' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', color: 'white', cursor: 'pointer' }}>中文</button>
+      <button onClick={() => setLang('fr')} style={{ padding: '4px 8px', borderRadius: '4px', border: 'none', background: lang === 'fr' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', color: 'white', cursor: 'pointer' }}>FR</button>
+    </div>
+  )
+}
+
+function AppContent() {
   const { address, isConnected } = useAccount()
   const [currentChapter, setCurrentChapter] = useState('intro')
+  const { t } = useI18n()
 
   // Render chapter icon
   const renderChapterIcon = (chapter, size = '20px') => {
@@ -135,9 +148,9 @@ function App() {
       boxSizing: 'border-box'
     }}>
       <div style={{ padding: '0 20px', marginBottom: '30px' }}>
-        <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>📚 Zama Learning Catalog</h3>
+        <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>📚 {t('sidebar.title')}</h3>
         <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
-          Click chapter to start learning
+          {t('sidebar.subtitle')}
         </p>
       </div>
 
@@ -177,7 +190,7 @@ function App() {
                 fontWeight: currentChapter === chapter.id ? '600' : '400',
                 color: currentChapter === chapter.id ? '#2196F3' : '#333'
               }}>
-                {chapter.title}
+                {t(chapter.titleKey)}
               </span>
             </div>
           </div>
@@ -187,7 +200,7 @@ function App() {
       {/* Progress indicator */}
       <div style={{ padding: '20px', marginTop: '30px' }}>
         <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
-          Learning Progress
+          {t('progress.title')}
         </div>
         <div style={{
           height: '6px',
@@ -223,8 +236,13 @@ function App() {
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white'
         }}>
-          <h1 style={{ margin: '0 0 10px 0' }}>🔐 ZamaSchool - FHE Learning Platform</h1>
-          <p style={{ margin: 0, opacity: 0.9 }}>Learn Zama's Fully Homomorphic Encryption technology and experience privacy-preserving blockchain computing</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+            <div>
+              <h1 style={{ margin: '0 0 10px 0' }}>🔐 {t('app.title')}</h1>
+              <p style={{ margin: 0, opacity: 0.9 }}>{t('app.subtitle')}</p>
+            </div>
+            <LanguageSwitcher />
+          </div>
         </header>
 
         {/* Main content area */}
@@ -233,7 +251,7 @@ function App() {
           <div style={{ marginBottom: '30px' }}>
             <h2 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
               {renderChapterIcon(chapter, '28px')}
-              {chapter.title}
+              {t(chapter.titleKey)}
             </h2>
             <div style={{ height: '3px', width: '60px', backgroundColor: '#2196F3', borderRadius: '2px' }} />
           </div>
@@ -244,7 +262,7 @@ function App() {
               <ConnectButton />
               {isConnected && (
                 <div style={{ marginTop: '15px', padding: '12px', backgroundColor: '#e8f5e8', borderRadius: '8px' }}>
-                  <p style={{ margin: 0, fontSize: '14px' }}>✅ Wallet Connected: <code>{address}</code></p>
+                  <p style={{ margin: 0, fontSize: '14px' }}>✅ {t('wallet.connected')}: <code>{address}</code></p>
                 </div>
               )}
             </div>
@@ -275,9 +293,7 @@ function App() {
           backgroundColor: '#f8f9fa',
           borderTop: '1px solid #dee2e6'
         }}>
-          <p style={{ margin: 0, color: '#666' }}>
-            Powered by <strong>Zama</strong> | Fully Homomorphic Encryption Learning Platform
-          </p>
+          <p style={{ margin: 0, color: '#666' }}>{t('footer.text')}</p>
         </footer>
       </div>
     )
@@ -293,8 +309,8 @@ function App() {
         border: '1px solid #dee2e6',
         marginBottom: '30px'
       }}>
-        <h3 style={{ marginTop: 0 }}>🎯 Learning Path Guide</h3>
-        <p>Welcome to ZamaSchool! This is an interactive platform designed specifically for learning Zama's Fully Homomorphic Encryption technology. Follow these steps to learn progressively:</p>
+        <h3 style={{ marginTop: 0 }}>🎯 {t('intro.path_guide')}</h3>
+        <p>{t('intro.welcome')}</p>
 
         <div style={{ display: 'grid', gap: '15px', marginTop: '25px' }}>
           {chapters.slice(1, -1).map((chapter, index) => (
@@ -324,7 +340,7 @@ function App() {
               {renderChapterIcon(chapter, '20px')}
               <div>
                 <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                  {chapter.title}
+                  {t(chapter.titleKey)}
                 </div>
                 <div style={{ fontSize: '14px', color: '#666' }}>
                   {getChapterDescription(chapter.id)}
@@ -341,24 +357,24 @@ function App() {
         borderRadius: '8px',
         border: '1px solid #ffeaa7'
       }}>
-        <h4>🔗 Preparation Before Learning</h4>
+        <h4>🔗 {t('intro.prep_title')}</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '15px' }}>
           <div>
-            <h5>📚 Learning Experience:</h5>
+            <h5>📚 {t('intro.experience_title')}</h5>
             <ul style={{ fontSize: '14px' }}>
-              <li>🎮 Experience real blockchain interaction processes</li>
-              <li>🔐 Learn encrypted data storage and reading operations</li>
-              <li>⚡ Practice using Zama's FHE capabilities</li>
-              <li>🌐 Understand how decentralized applications work</li>
+              <li>🎮 {t('intro.experience_1')}</li>
+              <li>🔐 {t('intro.experience_2')}</li>
+              <li>⚡ {t('intro.experience_3')}</li>
+              <li>🌐 {t('intro.experience_4')}</li>
             </ul>
           </div>
           <div>
-            <h5>🛡️ Privacy Protection Features:</h5>
+            <h5>🛡️ {t('intro.privacy_title')}</h5>
             <ul style={{ fontSize: '14px' }}>
-              <li>🔒 Data is fully encrypted on the blockchain</li>
-              <li>👤 Only you can decrypt your own data</li>
-              <li>🔢 Supports mathematical operations on encrypted data</li>
-              <li>🚫 Third parties cannot access your private information</li>
+              <li>🔒 {t('intro.privacy_1')}</li>
+              <li>👤 {t('intro.privacy_2')}</li>
+              <li>🔢 {t('intro.privacy_3')}</li>
+              <li>🚫 {t('intro.privacy_4')}</li>
             </ul>
           </div>
         </div>
@@ -374,22 +390,22 @@ function App() {
       borderRadius: '12px',
       border: '1px solid #2196F3'
     }}>
-      <h3 style={{ marginTop: 0 }}>🎉 Congratulations on Completing the Course!</h3>
-      <p>You have mastered the core concepts of Zama FHE technology:</p>
+      <h3 style={{ marginTop: 0 }}>{t('conclusion.title')}</h3>
+      <p>{t('conclusion.desc')}</p>
       <ul>
-        <li>✅ Understood the basic principles of Fully Homomorphic Encryption</li>
-        <li>✅ Learned to use the Zama frontend SDK</li>
-        <li>✅ Mastered encrypted data storage and retrieval</li>
-        <li>✅ Experienced privacy-preserving computation capabilities</li>
+        <li>{t('conclusion.li1')}</li>
+        <li>{t('conclusion.li2')}</li>
+        <li>{t('conclusion.li3')}</li>
+        <li>{t('conclusion.li4')}</li>
       </ul>
 
       <div style={{ marginTop: '25px', padding: '20px', backgroundColor: 'white', borderRadius: '8px' }}>
-        <h4>🚀 Next Steps:</h4>
+        <h4>{t('conclusion.next_steps')}</h4>
         <ul>
-          <li>Try building your own privacy-preserving DApp</li>
-          <li>Deep dive into advanced features of Zama's Solidity library</li>
-          <li>Explore more complex FHE algorithms and application scenarios</li>
-          <li>Join the Zama community and share your learning experience</li>
+          <li>{t('conclusion.next1')}</li>
+          <li>{t('conclusion.next2')}</li>
+          <li>{t('conclusion.next3')}</li>
+          <li>{t('conclusion.next4')}</li>
         </ul>
       </div>
     </div>
@@ -404,8 +420,8 @@ function App() {
       border: '1px solid #ffeaa7',
       textAlign: 'center'
     }}>
-      <h3>🔗 Wallet Connection Required</h3>
-      <p>Please connect your wallet to continue learning this chapter's content.</p>
+      <h3>🔗 {t('wallet.required.title')}</h3>
+      <p>{t('wallet.required.desc')}</p>
       <div style={{ marginTop: '20px' }}>
         <ConnectButton />
       </div>
@@ -437,8 +453,8 @@ function App() {
           fontWeight: '500'
         }}
       >
-        {direction === 'prev' && '← Previous'}
-        {direction === 'next' && 'Next →'}
+        {direction === 'prev' && t('nav.prev')}
+        {direction === 'next' && t('nav.next')}
         <span style={{ fontSize: '16px' }}>{targetChapter.icon}</span>
       </button>
     )
@@ -446,18 +462,19 @@ function App() {
 
   // Get chapter description
   const getChapterDescription = (chapterId) => {
-    const descriptions = {
-      'zama-intro': 'Deep dive into Zama FHE technology principles and architecture',
-      'sdk': 'Understand basic concepts and configuration of Zama frontend SDK',
-      'number-storage': 'Learn how to encrypt numbers and store them on blockchain',
-      'number-decrypt': 'Master methods for reading and decrypting numbers from blockchain',
-      'address-storage': 'Experience encrypted storage of Ethereum addresses',
-      'address-decrypt': 'Practice address data decryption operations',
-      'onchain-decrypt': 'Learn requestDecryption for onchain asynchronous decryption',
-      'calculations': 'Explore the powerful capabilities of homomorphic encrypted computation',
-      'number-comparison': 'Learn encrypted number comparison operations and conditional logic'
+    const map = {
+      'zama-intro': 'desc.zama_intro',
+      'sdk': 'desc.sdk',
+      'number-storage': 'desc.number_storage',
+      'number-decrypt': 'desc.number_decrypt',
+      'address-storage': 'desc.address_storage',
+      'address-decrypt': 'desc.address_decrypt',
+      'onchain-decrypt': 'desc.onchain_decrypt',
+      'calculations': 'desc.calculations',
+      'number-comparison': 'desc.number_comparison'
     }
-    return descriptions[chapterId] || ''
+    const key = map[chapterId]
+    return key ? t(key) : ''
   }
 
   return (
@@ -467,6 +484,14 @@ function App() {
         {renderMainContent()}
       </div>
     </FHEVMProvider>
+  )
+}
+
+function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   )
 }
 
