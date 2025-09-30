@@ -3,7 +3,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 import './App.css'
 
-// 导入组件
+// Import components
 import ZamaIntro from './components/ZamaIntro'
 import SDKDemo from './components/SDKDemo'
 import NumberStorage from './components/NumberStorage'
@@ -14,84 +14,84 @@ import OnchainDecryption from './components/OnchainDecryption'
 import FHECalculations from './components/FHECalculations'
 import NumberComparison from './components/NumberComparison'
 
-// 导入Context
+// Import Context
 import { FHEVMProvider } from './contexts/FHEVMContext'
 
-// 章节配置
+// Chapter configuration
 const chapters = [
   {
     id: 'intro',
-    title: '课程介绍',
+    title: 'Course Introduction',
     icon: '🏠',
     fallbackIcon: '■',
     component: null
   },
   {
     id: 'zama-intro',
-    title: 'Zama技术介绍',
+    title: 'Zama Technology Introduction',
     icon: '🔐',
     fallbackIcon: '♦',
     component: ZamaIntro
   },
   {
     id: 'sdk',
-    title: 'SDK介绍',
+    title: 'SDK Introduction',
     icon: '📦',
     fallbackIcon: '▲',
     component: SDKDemo
   },
   {
     id: 'number-storage',
-    title: '数字加密存储',
+    title: 'Encrypted Number Storage',
     icon: '🔢',
     fallbackIcon: '●',
     component: NumberStorage
   },
   {
     id: 'number-decrypt',
-    title: '数字解密',
+    title: 'Number Decryption',
     icon: '🔓',
     fallbackIcon: '◆',
     component: NumberDecryption
   },
   {
     id: 'address-storage',
-    title: 'address加密存储',
+    title: 'Encrypted Address Storage',
     icon: '📧',
     fallbackIcon: '▼',
     component: AddressStorage
   },
   {
     id: 'address-decrypt',
-    title: 'address解密',
+    title: 'Address Decryption',
     icon: '🔍',
     fallbackIcon: '◉',
     component: AddressDecryption
   },
   {
     id: 'onchain-decrypt',
-    title: '链上解密请求',
+    title: 'Onchain Decryption Request',
     icon: '⚡',
     fallbackIcon: '⚡',
     component: OnchainDecryption
   },
   {
     id: 'calculations',
-    title: 'FHE加密计算',
+    title: 'FHE Encrypted Calculations',
     icon: '🧮',
     fallbackIcon: '★',
     component: FHECalculations
   },
   {
     id: 'number-comparison',
-    title: '加密数字比较',
+    title: 'Encrypted Number Comparison',
     icon: '⚖️',
     fallbackIcon: '⚖',
     component: NumberComparison
   },
   {
     id: 'conclusion',
-    title: '学习总结',
+    title: 'Learning Summary',
     icon: '🎉',
     fallbackIcon: '✓',
     component: null
@@ -102,7 +102,7 @@ function App() {
   const { address, isConnected } = useAccount()
   const [currentChapter, setCurrentChapter] = useState('intro')
 
-  // 渲染章节图标
+  // Render chapter icon
   const renderChapterIcon = (chapter, size = '20px') => {
     return (
       <span
@@ -120,7 +120,7 @@ function App() {
     )
   }
 
-  // 渲染侧边栏
+  // Render sidebar
   const renderSidebar = () => (
     <div style={{
       width: '280px',
@@ -135,9 +135,9 @@ function App() {
       boxSizing: 'border-box'
     }}>
       <div style={{ padding: '0 20px', marginBottom: '30px' }}>
-        <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>📚 Zama学习目录</h3>
+        <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>📚 Zama Learning Catalog</h3>
         <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
-          点击章节开始学习
+          Click chapter to start learning
         </p>
       </div>
 
@@ -184,10 +184,10 @@ function App() {
         ))}
       </nav>
 
-      {/* 进度指示器 */}
+      {/* Progress indicator */}
       <div style={{ padding: '20px', marginTop: '30px' }}>
         <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
-          学习进度
+          Learning Progress
         </div>
         <div style={{
           height: '6px',
@@ -209,7 +209,7 @@ function App() {
     </div>
   )
 
-  // 渲染主要内容
+  // Render main content
   const renderMainContent = () => {
     const chapter = chapters.find(ch => ch.id === currentChapter)
 
@@ -217,19 +217,19 @@ function App() {
 
     return (
       <div style={{ marginLeft: '280px', minHeight: '100vh' }}>
-        {/* 头部 */}
+        {/* Header */}
         <header style={{
           padding: '20px 40px',
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white'
         }}>
-          <h1 style={{ margin: '0 0 10px 0' }}>🔐 ZamaSchool - FHE学习平台</h1>
-          <p style={{ margin: 0, opacity: 0.9 }}>学习Zama的全同态加密技术，体验隐私保护的区块链计算</p>
+          <h1 style={{ margin: '0 0 10px 0' }}>🔐 ZamaSchool - FHE Learning Platform</h1>
+          <p style={{ margin: 0, opacity: 0.9 }}>Learn Zama's Fully Homomorphic Encryption technology and experience privacy-preserving blockchain computing</p>
         </header>
 
-        {/* 主要内容区域 */}
+        {/* Main content area */}
         <main style={{ padding: '40px' }}>
-          {/* 当前章节标题 */}
+          {/* Current chapter title */}
           <div style={{ marginBottom: '30px' }}>
             <h2 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
               {renderChapterIcon(chapter, '28px')}
@@ -238,26 +238,26 @@ function App() {
             <div style={{ height: '3px', width: '60px', backgroundColor: '#2196F3', borderRadius: '2px' }} />
           </div>
 
-          {/* 钱包连接区域 */}
+          {/* Wallet connection area */}
           {(currentChapter !== 'intro' && currentChapter !== 'conclusion') && (
             <div style={{ marginBottom: '30px', textAlign: 'center' }}>
               <ConnectButton />
               {isConnected && (
                 <div style={{ marginTop: '15px', padding: '12px', backgroundColor: '#e8f5e8', borderRadius: '8px' }}>
-                  <p style={{ margin: 0, fontSize: '14px' }}>✅ 钱包已连接: <code>{address}</code></p>
+                  <p style={{ margin: 0, fontSize: '14px' }}>✅ Wallet Connected: <code>{address}</code></p>
                 </div>
               )}
             </div>
           )}
 
-          {/* 章节内容 */}
+          {/* Chapter content */}
           {currentChapter === 'intro' && renderIntroContent()}
           {currentChapter === 'conclusion' && renderConclusionContent()}
           {chapter.component && isConnected && React.createElement(chapter.component)}
           {chapter.component && !isConnected && renderWalletRequired()}
         </main>
 
-        {/* 导航按钮 */}
+        {/* Navigation buttons */}
         <div style={{
           padding: '20px 40px',
           borderTop: '1px solid #eee',
@@ -268,7 +268,7 @@ function App() {
           {renderNavigationButton('next')}
         </div>
 
-        {/* 页脚 */}
+        {/* Footer */}
         <footer style={{
           padding: '20px',
           textAlign: 'center',
@@ -276,14 +276,14 @@ function App() {
           borderTop: '1px solid #dee2e6'
         }}>
           <p style={{ margin: 0, color: '#666' }}>
-            Powered by <strong>Zama</strong> | 全同态加密技术学习平台
+            Powered by <strong>Zama</strong> | Fully Homomorphic Encryption Learning Platform
           </p>
         </footer>
       </div>
     )
   }
 
-  // 渲染课程介绍内容
+  // Render course introduction content
   const renderIntroContent = () => (
     <div>
       <div style={{
@@ -293,8 +293,8 @@ function App() {
         border: '1px solid #dee2e6',
         marginBottom: '30px'
       }}>
-        <h3 style={{ marginTop: 0 }}>🎯 学习路径指导</h3>
-        <p>欢迎来到ZamaSchool！这是一个专为学习Zama全同态加密技术设计的交互式平台。按照以下步骤循序渐进地学习：</p>
+        <h3 style={{ marginTop: 0 }}>🎯 Learning Path Guide</h3>
+        <p>Welcome to ZamaSchool! This is an interactive platform designed specifically for learning Zama's Fully Homomorphic Encryption technology. Follow these steps to learn progressively:</p>
 
         <div style={{ display: 'grid', gap: '15px', marginTop: '25px' }}>
           {chapters.slice(1, -1).map((chapter, index) => (
@@ -341,24 +341,24 @@ function App() {
         borderRadius: '8px',
         border: '1px solid #ffeaa7'
       }}>
-        <h4>🔗 开始学习前的准备</h4>
+        <h4>🔗 Preparation Before Learning</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '15px' }}>
           <div>
-            <h5>📚 学习体验：</h5>
+            <h5>📚 Learning Experience:</h5>
             <ul style={{ fontSize: '14px' }}>
-              <li>🎮 体验真实的区块链交互过程</li>
-              <li>🔐 学习加密数据的存储和读取操作</li>
-              <li>⚡ 练习使用Zama的FHE功能</li>
-              <li>🌐 理解去中心化应用的工作原理</li>
+              <li>🎮 Experience real blockchain interaction processes</li>
+              <li>🔐 Learn encrypted data storage and reading operations</li>
+              <li>⚡ Practice using Zama's FHE capabilities</li>
+              <li>🌐 Understand how decentralized applications work</li>
             </ul>
           </div>
           <div>
-            <h5>🛡️ 隐私保护特性：</h5>
+            <h5>🛡️ Privacy Protection Features:</h5>
             <ul style={{ fontSize: '14px' }}>
-              <li>🔒 数据在区块链上完全加密存储</li>
-              <li>👤 只有你可以解密自己的数据</li>
-              <li>🔢 支持加密状态下的数学运算</li>
-              <li>🚫 第三方无法获取你的隐私信息</li>
+              <li>🔒 Data is fully encrypted on the blockchain</li>
+              <li>👤 Only you can decrypt your own data</li>
+              <li>🔢 Supports mathematical operations on encrypted data</li>
+              <li>🚫 Third parties cannot access your private information</li>
             </ul>
           </div>
         </div>
@@ -366,7 +366,7 @@ function App() {
     </div>
   )
 
-  // 渲染学习总结内容
+  // Render learning summary content
   const renderConclusionContent = () => (
     <div style={{
       padding: '30px',
@@ -374,28 +374,28 @@ function App() {
       borderRadius: '12px',
       border: '1px solid #2196F3'
     }}>
-      <h3 style={{ marginTop: 0 }}>🎉 恭喜完成学习！</h3>
-      <p>你已经掌握了Zama FHE技术的核心概念：</p>
+      <h3 style={{ marginTop: 0 }}>🎉 Congratulations on Completing the Course!</h3>
+      <p>You have mastered the core concepts of Zama FHE technology:</p>
       <ul>
-        <li>✅ 理解了全同态加密的基本原理</li>
-        <li>✅ 学会了使用Zama前端SDK</li>
-        <li>✅ 掌握了加密数据的存储和读取</li>
-        <li>✅ 体验了隐私保护的计算功能</li>
+        <li>✅ Understood the basic principles of Fully Homomorphic Encryption</li>
+        <li>✅ Learned to use the Zama frontend SDK</li>
+        <li>✅ Mastered encrypted data storage and retrieval</li>
+        <li>✅ Experienced privacy-preserving computation capabilities</li>
       </ul>
 
       <div style={{ marginTop: '25px', padding: '20px', backgroundColor: 'white', borderRadius: '8px' }}>
-        <h4>🚀 下一步建议：</h4>
+        <h4>🚀 Next Steps:</h4>
         <ul>
-          <li>尝试构建自己的隐私保护DApp</li>
-          <li>深入学习Zama Solidity库的高级功能</li>
-          <li>探索更复杂的FHE算法和应用场景</li>
-          <li>参与Zama社区，分享你的学习心得</li>
+          <li>Try building your own privacy-preserving DApp</li>
+          <li>Deep dive into advanced features of Zama's Solidity library</li>
+          <li>Explore more complex FHE algorithms and application scenarios</li>
+          <li>Join the Zama community and share your learning experience</li>
         </ul>
       </div>
     </div>
   )
 
-  // 渲染需要连接钱包的提示
+  // Render wallet connection required prompt
   const renderWalletRequired = () => (
     <div style={{
       padding: '40px',
@@ -404,15 +404,15 @@ function App() {
       border: '1px solid #ffeaa7',
       textAlign: 'center'
     }}>
-      <h3>🔗 需要连接钱包</h3>
-      <p>请先连接钱包以继续学习这个章节的内容。</p>
+      <h3>🔗 Wallet Connection Required</h3>
+      <p>Please connect your wallet to continue learning this chapter's content.</p>
       <div style={{ marginTop: '20px' }}>
         <ConnectButton />
       </div>
     </div>
   )
 
-  // 渲染导航按钮
+  // Render navigation buttons
   const renderNavigationButton = (direction) => {
     const currentIndex = chapters.findIndex(ch => ch.id === currentChapter)
     const targetIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1
@@ -437,25 +437,25 @@ function App() {
           fontWeight: '500'
         }}
       >
-        {direction === 'prev' && '← 上一章'}
-        {direction === 'next' && '下一章 →'}
+        {direction === 'prev' && '← Previous'}
+        {direction === 'next' && 'Next →'}
         <span style={{ fontSize: '16px' }}>{targetChapter.icon}</span>
       </button>
     )
   }
 
-  // 获取章节描述
+  // Get chapter description
   const getChapterDescription = (chapterId) => {
     const descriptions = {
-      'zama-intro': '深入了解Zama FHE技术原理和架构',
-      'sdk': '了解Zama前端SDK的基本概念和配置',
-      'number-storage': '学习如何加密数字并存储到区块链',
-      'number-decrypt': '掌握从区块链读取和解密数字的方法',
-      'address-storage': '体验以太坊地址的加密存储',
-      'address-decrypt': '练习地址数据的解密操作',
-      'onchain-decrypt': '学习requestDecryption链上异步解密',
-      'calculations': '探索同态加密计算的强大功能',
-      'number-comparison': '学习加密数字的比较运算和条件判断'
+      'zama-intro': 'Deep dive into Zama FHE technology principles and architecture',
+      'sdk': 'Understand basic concepts and configuration of Zama frontend SDK',
+      'number-storage': 'Learn how to encrypt numbers and store them on blockchain',
+      'number-decrypt': 'Master methods for reading and decrypting numbers from blockchain',
+      'address-storage': 'Experience encrypted storage of Ethereum addresses',
+      'address-decrypt': 'Practice address data decryption operations',
+      'onchain-decrypt': 'Learn requestDecryption for onchain asynchronous decryption',
+      'calculations': 'Explore the powerful capabilities of homomorphic encrypted computation',
+      'number-comparison': 'Learn encrypted number comparison operations and conditional logic'
     }
     return descriptions[chapterId] || ''
   }
