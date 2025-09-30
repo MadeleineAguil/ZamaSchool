@@ -323,19 +323,34 @@ function AppContent() {
     if (!chapter) return null
 
     return (
-      <div style={{ marginLeft: '280px', minHeight: '100vh' }}>
+      <div style={{ marginLeft: '280px', minHeight: '100vh', maxWidth: '100vw', overflowX: 'hidden' }}>
         {/* Header */}
         <header style={{
           padding: '20px 40px',
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-            <div>
-              <h1 style={{ margin: '0 0 10px 0' }}>🔐 {t('app.title')}</h1>
-              <p style={{ margin: 0, opacity: 0.9 }}>{t('app.subtitle')}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', rowGap: '8px', maxWidth: '100%' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h1 style={{
+                margin: '0 0 10px 0',
+                display: '-webkit-box',
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>🔐 {t('app.title')}</h1>
+              <p style={{
+                margin: 0,
+                opacity: 0.9,
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>{t('app.subtitle')}</p>
             </div>
-            <LanguageSwitcher />
+            <div style={{ flexShrink: 0 }}>
+              <LanguageSwitcher />
+            </div>
           </div>
         </header>
 
