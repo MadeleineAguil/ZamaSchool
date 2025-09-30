@@ -5,12 +5,14 @@ import { useNumberStorage } from '../hooks/useContracts'
 import { Contract } from 'ethers'
 import { useEthersSigner } from '../hooks/useEthersSigner'
 import NumberStorageABI from '../config/NumberStorageABI.json'
+import { useI18n } from '../contexts/I18nContext'
 
 const NumberComparison = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
   const signer = useEthersSigner({ chainId })
+  const { t } = useI18n()
   const [isComparing, setIsComparing] = useState(false)
   const [comparisonValue, setComparisonValue] = useState('')
   const [comparisonType, setComparisonType] = useState('equal')
@@ -30,21 +32,21 @@ const NumberComparison = () => {
   } = useNumberStorage()
 
   const comparisonTypes = [
-    { value: 'equal', label: '等于 (==)', description: '检查存储数字是否等于输入数字' },
-    { value: 'greater', label: '大于 (>)', description: '检查存储数字是否大于输入数字' },
-    { value: 'less', label: '小于 (<)', description: '检查存储数字是否小于输入数字' },
-    { value: 'greater_or_equal', label: '大于等于 (>=)', description: '检查存储数字是否大于等于输入数字' },
-    { value: 'less_or_equal', label: '小于等于 (<=)', description: '检查存储数字是否小于等于输入数字' }
+    { value: 'equal', label: t('cmp.equal.label'), description: t('cmp.equal.desc') },
+    { value: 'greater', label: t('cmp.greater.label'), description: t('cmp.greater.desc') },
+    { value: 'less', label: t('cmp.less.label'), description: t('cmp.less.desc') },
+    { value: 'greater_or_equal', label: t('cmp.greater_or_equal.label'), description: t('cmp.greater_or_equal.desc') },
+    { value: 'less_or_equal', label: t('cmp.less_or_equal.label'), description: t('cmp.less_or_equal.desc') }
   ]
 
   const handleSingleComparison = async () => {
     if (!instance || !comparisonValue || !address || !walletClient) {
-      alert('请确保钱包已连接且输入了比较数字')
+      alert(t('cmp.ensure_wallet_and_value'))
       return
     }
 
     if (!storedNumber) {
-      alert('您还没有在合约中存储数字，请先存储一个数字')
+      alert(t('cmp.no_stored_number'))
       return
     }
 
@@ -74,7 +76,7 @@ const NumberComparison = () => {
           functionName = 'compareStoredNumberLessOrEqual'
           break
         default:
-          throw new Error('无效的比较类型')
+          throw new Error('Invalid comparison type')
       }
 
       // 调用合约方法
@@ -83,12 +85,12 @@ const NumberComparison = () => {
         args: [encryptedInput.handles[0], encryptedInput.inputProof]
       })
 
-      console.log('比较交易已提交:', result)
-      alert('比较操作成功！等待交易确认后可以查看结果。')
+      console.log('Comparison tx sent:', result)
+      alert(t('cmp.compare_success'))
 
     } catch (error) {
-      console.error('比较失败:', error)
-      alert('比较失败: ' + error.message)
+      console.error('Compare failed:', error)
+      alert(t('cmp.compare_failed') + ' ' + error.message)
     } finally {
       setIsComparing(false)
     }
@@ -96,7 +98,7 @@ const NumberComparison = () => {
 
   const handleTwoUsersComparison = async () => {
     if (!userAAddress || !userBAddress || !address || !walletClient) {
-      alert('请输入两个用户地址')
+      alert(t('cmp.enter_two_addresses'))
       return
     }
 
@@ -108,12 +110,12 @@ const NumberComparison = () => {
         args: [userAAddress, userBAddress, comparisonType]
       })
 
-      console.log('用户比较交易已提交:', result)
-      alert('用户比较操作成功！等待交易确认后可以查看结果。')
+      console.log('Users comparison tx sent:', result)
+      alert(t('cmp.users_compare_success'))
 
     } catch (error) {
-      console.error('用户比较失败:', error)
-      alert('用户比较失败: ' + error.message)
+      console.error('Users compare failed:', error)
+      alert(t('cmp.users_compare_failed') + ' ' + error.message)
     } finally {
       setIsComparingTwoUsers(false)
     }
@@ -121,7 +123,7 @@ const NumberComparison = () => {
 
   const handleDecryptComparisonResult = async () => {
     if (!instance || !address || !walletClient) {
-      alert('请确保钱包已连接')
+      alert(t('common.connect_wallet'))
       return
     }
 
@@ -133,7 +135,7 @@ const NumberComparison = () => {
       const comparisonResultHandle = await contract.getComparisonResult(address)
 
       if (!comparisonResultHandle) {
-        alert('没有找到比较结果，请先进行比较操作')
+        alert(t('cmp.no_result_found'))
         return
       }
 
@@ -185,10 +187,10 @@ const NumberComparison = () => {
       const decryptedResult = result[comparisonResultHandle.toString()]
       setComparisonResult(decryptedResult)
 
-      console.log('解密比较结果:', decryptedResult)
+      console.log('Decrypted comparison result:', decryptedResult)
     } catch (error) {
-      console.error('解密比较结果失败:', error)
-      alert('解密比较结果失败: ' + error.message)
+      console.error('Decrypt comparison result failed:', error)
+      alert(t('cmp.decrypt_failed') + ' ' + error.message)
     } finally {
       setIsDecryptingResult(false)
     }
@@ -197,10 +199,10 @@ const NumberComparison = () => {
   if (!isInitialized) {
     return (
       <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
-        <h3>FHE加密数字比较</h3>
+        <h3>{t('cmp.section_title')}</h3>
         <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-          <p>⏳ 请先完成步骤1中的SDK初始化</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行比较操作</p>
+          <p>⏳ {t('common.init_sdk_first')}</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>{t('cmp.sdk_required_for_cmp')}</p>
         </div>
       </div>
     )
@@ -208,19 +210,19 @@ const NumberComparison = () => {
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>FHE加密数字比较</h3>
+      <h3>{t('cmp.section_title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>学习目标：</h4>
+        <h4>{t('common.learning_objectives')}</h4>
         <ul>
-          <li>掌握加密数据的比较操作</li>
-          <li>学习不同比较运算符的使用</li>
-          <li>理解加密布尔值的处理</li>
-          <li>体验保护隐私的条件判断</li>
+          <li>{t('cmp.goal_1')}</li>
+          <li>{t('cmp.goal_2')}</li>
+          <li>{t('cmp.goal_3')}</li>
+          <li>{t('cmp.goal_4')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 智能合约比较代码:</h5>
+          <h5>📝 {t('cmp.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 加密数字比较示例
 function compareStoredNumberEqual(externalEuint32 inputNumber, bytes calldata inputProof) external {
@@ -240,7 +242,7 @@ FHE.le(a, b)  // 小于等于
 FHE.ne(a, b)  // 不等于`}</pre>
           </div>
 
-          <h5>📝 前端比较代码:</h5>
+          <h5>📝 {t('cmp.frontend_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 前端加密比较流程
 const compareNumbers = async (compareValue, comparisonType) => {
@@ -264,21 +266,19 @@ const compareNumbers = async (compareValue, comparisonType) => {
       </div>
 
       <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
-        <h4>方案一：与指定数字比较</h4>
+        <h4>{t('cmp.plan1_title')}</h4>
         <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
-          将你存储的加密数字与输入的数字进行比较
+          {t('cmp.plan1_desc')}
         </p>
 
         {!storedNumber && (
           <div style={{ padding: '10px', backgroundColor: '#fff3cd', borderRadius: '4px', marginBottom: '15px' }}>
-            ⚠️ 您还没有存储数字，请先前往数字存储章节存储一个数字
+            ⚠️ {t('cmp.no_number_tip')}
           </div>
         )}
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            选择比较类型：
-          </label>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>{t('cmp.select_type')}</label>
           <select
             value={comparisonType}
             onChange={(e) => setComparisonType(e.target.value)}
@@ -296,20 +296,16 @@ const compareNumbers = async (compareValue, comparisonType) => {
               </option>
             ))}
           </select>
-          <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
-            {comparisonTypes.find(t => t.value === comparisonType)?.description}
-          </p>
+          <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>{comparisonTypes.find(ti => ti.value === comparisonType)?.description}</p>
         </div>
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            输入比较数字：
-          </label>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>{t('cmp.input_number_label')}</label>
           <input
             type="number"
             value={comparisonValue}
             onChange={(e) => setComparisonValue(e.target.value)}
-            placeholder="请输入要比较的数字"
+            placeholder={t('cmp.input_number_placeholder')}
             style={{
               width: '100%',
               padding: '8px',
@@ -332,25 +328,23 @@ const compareNumbers = async (compareValue, comparisonType) => {
             opacity: (!instance || !comparisonValue || !storedNumber || isComparing) ? 0.6 : 1
           }}
         >
-          {isComparing ? '比较中...' : '执行比较'}
+          {isComparing ? t('cmp.comparing') : t('cmp.execute_compare')}
         </button>
       </div>
 
       <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#f3e5f5', borderRadius: '8px' }}>
-        <h4>方案二：比较两个用户的数字</h4>
+        <h4>{t('cmp.plan2_title')}</h4>
         <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
-          比较两个不同用户存储的加密数字大小
+          {t('cmp.plan2_desc')}
         </p>
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            用户A地址：
-          </label>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>{t('cmp.user_a')}</label>
           <input
             type="text"
             value={userAAddress}
             onChange={(e) => setUserAAddress(e.target.value)}
-            placeholder="输入用户A的地址"
+            placeholder={t('cmp.user_a_placeholder')}
             style={{
               width: '100%',
               padding: '8px',
@@ -361,14 +355,12 @@ const compareNumbers = async (compareValue, comparisonType) => {
         </div>
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            用户B地址：
-          </label>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>{t('cmp.user_b')}</label>
           <input
             type="text"
             value={userBAddress}
             onChange={(e) => setUserBAddress(e.target.value)}
-            placeholder="输入用户B的地址"
+            placeholder={t('cmp.user_b_placeholder')}
             style={{
               width: '100%',
               padding: '8px',
@@ -389,14 +381,12 @@ const compareNumbers = async (compareValue, comparisonType) => {
               fontSize: '12px'
             }}
           >
-            使用我的地址
+            {t('cmp.use_my_address')}
           </button>
         </div>
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            比较类型：
-          </label>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>{t('cmp.select_type_simple')}</label>
           <select
             value={comparisonType}
             onChange={(e) => setComparisonType(e.target.value)}
@@ -407,9 +397,9 @@ const compareNumbers = async (compareValue, comparisonType) => {
               borderRadius: '4px'
             }}
           >
-            <option value="equal">相等</option>
-            <option value="greater">用户A 大于 用户B</option>
-            <option value="less">用户A 小于 用户B</option>
+            <option value="equal">{t('cmp.equal_simple')}</option>
+            <option value="greater">{t('cmp.greater_simple')}</option>
+            <option value="less">{t('cmp.less_simple')}</option>
           </select>
         </div>
 
@@ -426,14 +416,14 @@ const compareNumbers = async (compareValue, comparisonType) => {
             opacity: (!instance || !userAAddress || !userBAddress || isComparingTwoUsers) ? 0.6 : 1
           }}
         >
-          {isComparingTwoUsers ? '比较中...' : '比较两个用户'}
+          {isComparingTwoUsers ? t('cmp.comparing') : t('cmp.compare_two_users')}
         </button>
       </div>
 
       <div style={{ marginBottom: '20px', padding: '20px', backgroundColor: '#e8f5e8', borderRadius: '8px' }}>
-        <h4>查看比较结果</h4>
+        <h4>{t('cmp.view_result')}</h4>
         <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
-          比较操作完成后，点击按钮解密查看结果
+          {t('cmp.decrypt_tip')}
         </p>
 
         <button
@@ -449,41 +439,41 @@ const compareNumbers = async (compareValue, comparisonType) => {
             opacity: (!instance || isDecryptingResult) ? 0.6 : 1
           }}
         >
-          {isDecryptingResult ? '解密中...' : '解密比较结果'}
+          {isDecryptingResult ? t('cmp.decrypting') : t('cmp.decrypt_result')}
         </button>
 
         {comparisonResult !== null && (
           <div style={{ marginTop: '15px', padding: '15px', backgroundColor: 'white', borderRadius: '4px', border: '1px solid #c8e6c9' }}>
-            <h5>✅ 比较结果：</h5>
+            <h5>✅ {t('cmp.result_title')}</h5>
             <p style={{ fontSize: '18px', fontWeight: 'bold', color: comparisonResult ? '#4CAF50' : '#f44336' }}>
-              {comparisonResult ? 'TRUE ✓' : 'FALSE ✗'}
+              {comparisonResult ? t('cmp.true') : t('cmp.false')}
             </p>
             <p style={{ fontSize: '14px', color: '#666' }}>
-              {comparisonResult ? '条件成立' : '条件不成立'}
+              {comparisonResult ? t('cmp.condition_true') : t('cmp.condition_false')}
             </p>
           </div>
         )}
       </div>
 
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>加密比较的特点：</h5>
+        <h5>{t('cmp.features_title')}</h5>
         <ul>
-          <li><strong>隐私保护:</strong> 比较过程中数据始终保持加密状态</li>
-          <li><strong>结果加密:</strong> 比较结果（布尔值）也是加密的</li>
-          <li><strong>零知识:</strong> 第三方无法知道具体的数值，只能知道比较结果</li>
-          <li><strong>可组合性:</strong> 可以基于比较结果进行更复杂的逻辑运算</li>
+          <li><strong>{t('cmp.privacy')}:</strong> {t('cmp.privacy_desc')}</li>
+          <li><strong>{t('cmp.result_encrypted')}:</strong> {t('cmp.result_encrypted_desc')}</li>
+          <li><strong>{t('cmp.zk')}:</strong> {t('cmp.zk_desc')}</li>
+          <li><strong>{t('cmp.composability')}:</strong> {t('cmp.composability_desc')}</li>
         </ul>
 
         <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
-          <strong>💡 应用场景:</strong>
+          <strong>💡 {t('cmp.use_cases')}:</strong>
           <br />
-          • 隐私拍卖（比较出价高低）
+          • {t('cmp.case_1')}
           <br />
-          • 保密投票（比较选票数量）
+          • {t('cmp.case_2')}
           <br />
-          • 信用评估（比较信用分数）
+          • {t('cmp.case_3')}
           <br />
-          • 隐私排名（比较用户得分）
+          • {t('cmp.case_4')}
         </div>
       </div>
     </div>

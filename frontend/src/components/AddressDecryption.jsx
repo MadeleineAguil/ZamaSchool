@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
 import { useAddressStorage } from '../hooks/useContracts'
+import { useI18n } from '../contexts/I18nContext'
 
 const AddressDecryption = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
+  const { t } = useI18n()
   const [isDecrypting, setIsDecrypting] = useState(false)
   const [decryptedAddress, setDecryptedAddress] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
@@ -21,7 +23,7 @@ const AddressDecryption = () => {
 
   const handleDecryptAddress = async () => {
     if (!instance || !ciphertextHandle || !address || !walletClient) {
-      alert('请确保钱包已连接且输入了密文句柄')
+      alert(t('address_decrypt.ensure_wallet_and_handle'))
       return
     }
 
@@ -75,10 +77,10 @@ const AddressDecryption = () => {
       const decryptedValue = result[ciphertextHandle]
       setDecryptedAddress(decryptedValue)
 
-      console.log('地址解密成功:', decryptedValue)
+      console.log('Address decrypted:', decryptedValue)
     } catch (error) {
-      console.error('解密失败:', error)
-      alert('解密失败: ' + error.message)
+      console.error('Decrypt failed:', error)
+      alert(t('address_decrypt.decrypt_failed') + ' ' + error.message)
     } finally {
       setIsDecrypting(false)
     }
@@ -88,17 +90,17 @@ const AddressDecryption = () => {
     // 从合约获取用户的加密地址
     try {
       if (!storedAddress) {
-        alert('您还没有在合约中存储地址，请先前往步骤4存储地址')
+        alert(t('address_decrypt.no_address_warning'))
         return
       }
 
       // 将storedAddress转换为字符串句柄
       const handle = storedAddress.toString()
       setCiphertextHandle(handle)
-      console.log('已从合约获取地址密文句柄:', handle)
+      console.log('Fetched address handle from contract:', handle)
     } catch (error) {
-      console.error('获取失败:', error)
-      alert('获取失败: ' + error.message)
+      console.error('Fetch failed:', error)
+      alert(t('common.fetch_failed') + ' ' + error.message)
     }
   }
 
@@ -109,10 +111,10 @@ const AddressDecryption = () => {
   if (!isInitialized) {
     return (
       <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
-        <h3>步骤5: 地址解密读取</h3>
+        <h3>{t('address_decrypt.section_title')}</h3>
         <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-          <p>⏳ 请先完成步骤1中的SDK初始化</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行解密操作</p>
+          <p>⏳ {t('common.init_sdk_first')}</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>{t('common.sdk_required_for_crypto')}</p>
         </div>
       </div>
     )
@@ -120,18 +122,18 @@ const AddressDecryption = () => {
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>步骤5: 地址解密读取</h3>
+      <h3>{t('address_decrypt.section_title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>学习目标：</h4>
+        <h4>{t('common.learning_objectives')}</h4>
         <ul>
-          <li>从智能合约获取加密地址</li>
-          <li>解密eaddress类型数据</li>
-          <li>验证解密后的地址格式</li>
+          <li>{t('address_decrypt.goal_1')}</li>
+          <li>{t('address_decrypt.goal_2')}</li>
+          <li>{t('address_decrypt.goal_3')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 智能合约查询代码:</h5>
+          <h5>📝 {t('address_decrypt.contract_read_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 获取加密地址的合约函数
 function getStoredAddress() external view returns (eaddress) {
@@ -154,7 +156,7 @@ function compareAddresses(address userA, address userB)
 }`}</pre>
           </div>
 
-          <h5>📝 前端地址解密代码:</h5>
+          <h5>📝 {t('address_decrypt.frontend_decrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 地址解密完整流程
 const decryptAddress = async (addressHandle) => {
@@ -212,17 +214,17 @@ const isValidAddress = (addr) => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤1: 获取你的加密地址</h4>
+        <h4>{t('address_decrypt.step1_title')}</h4>
 
         {isGettingStored && (
           <div style={{ padding: '10px', backgroundColor: '#f0f8ff', borderRadius: '4px', marginBottom: '10px' }}>
-            ⏳ 正在从合约获取地址数据...
+            ⏳ {t('address_decrypt.fetching')}
           </div>
         )}
 
         {getStoredError && (
           <div style={{ padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px', marginBottom: '10px' }}>
-            ❌ 获取地址失败，请检查网络连接
+            ❌ {t('address_decrypt.fetch_error')}
           </div>
         )}
 
@@ -239,37 +241,37 @@ const isValidAddress = (addr) => {
             opacity: (!address || isGettingStored) ? 0.6 : 1
           }}
         >
-          {storedAddress ? '✅ 从合约获取我的加密地址' : '从合约获取我的加密地址'}
+          {storedAddress ? t('address_decrypt.fetch_button_done') : t('address_decrypt.fetch_button')}
         </button>
 
         {!storedAddress && !isGettingStored && !getStoredError && (
           <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-            💡 提示：如果没有存储地址，请先前往步骤4存储一个地址
+            💡 {t('address_decrypt.tip_no_stored_address')}
           </p>
         )}
       </div>
 
       {ciphertextHandle && (
         <div style={{ marginBottom: '20px' }}>
-          <h4>步骤2: 地址密文句柄</h4>
+          <h4>{t('address_decrypt.step2_title')}</h4>
           <div style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '4px', marginBottom: '10px' }}>
             <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
               {ciphertextHandle}
             </code>
           </div>
           <p style={{ fontSize: '14px', color: '#666' }}>
-            这是从区块链获取的加密地址句柄
+            {t('address_decrypt.handle_desc')}
           </p>
         </div>
       )}
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤3: 解密地址</h4>
+        <h4>{t('address_decrypt.step3_title')}</h4>
         <input
           type="text"
           value={ciphertextHandle}
           onChange={(e) => setCiphertextHandle(e.target.value)}
-          placeholder="输入地址密文句柄（或点击上面按钮获取）"
+          placeholder={t('address_decrypt.input_placeholder_handle')}
           style={{
             width: '100%',
             padding: '8px',
@@ -293,14 +295,14 @@ const isValidAddress = (addr) => {
             cursor: 'pointer'
           }}
         >
-          {isDecrypting ? '解密中...' : '解密地址'}
+          {isDecrypting ? t('address_decrypt.decrypting') : t('address_decrypt.decrypt_button')}
         </button>
       </div>
 
       {decryptedAddress !== null && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
-          <h4>✅ 地址解密成功！</h4>
-          <p><strong>解密结果:</strong></p>
+          <h4>✅ {t('address_decrypt.decrypt_success')}</h4>
+          <p><strong>{t('address_decrypt.result_label')}:</strong></p>
           <code style={{
             fontSize: '14px',
             wordBreak: 'break-all',
@@ -316,37 +318,37 @@ const isValidAddress = (addr) => {
           <div style={{ marginTop: '15px' }}>
             {isValidEthereumAddress(decryptedAddress) ? (
               <div style={{ color: 'green' }}>
-                ✅ 有效的以太坊地址格式
+                ✅ {t('address_decrypt.valid_eth')}
               </div>
             ) : (
               <div style={{ color: 'orange' }}>
-                ⚠️ 这可能是随机生成的地址或特殊编码的地址
+                ⚠️ {t('address_decrypt.random_or_special')}
               </div>
             )}
           </div>
 
           <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-            🎉 恭喜！你已成功解密出原始地址。
+            🎉 {t('address_decrypt.congrats_text')}
           </p>
         </div>
       )}
 
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>地址解密特点：</h5>
+        <h5>{t('address_decrypt.features_title')}</h5>
         <ul>
-          <li><strong>eaddress类型:</strong> 160位加密地址，与euint160等价</li>
-          <li><strong>格式验证:</strong> 解密后验证是否为有效的以太坊地址</li>
-          <li><strong>随机地址:</strong> 合约生成的随机地址可能不符合常规格式</li>
-          <li><strong>隐私保护:</strong> 地址信息在链上完全加密</li>
+          <li><strong>eaddress:</strong> {t('address_storage.eaddress_desc')}</li>
+          <li><strong>{t('address_decrypt.format_validation')}:</strong> {t('address_decrypt.format_validation_desc')}</li>
+          <li><strong>{t('address_decrypt.random_address')}:</strong> {t('address_decrypt.random_address_desc')}</li>
+          <li><strong>{t('address_storage.privacy')}:</strong> {t('address_storage.privacy_desc')}</li>
         </ul>
 
         <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e3f2fd', borderRadius: '4px' }}>
-          <h5>💡 应用场景：</h5>
+          <h5>💡 {t('address_decrypt.use_cases')}</h5>
           <ul>
-            <li>匿名投票系统中的候选人地址</li>
-            <li>私密转账的收款地址</li>
-            <li>隐私拍卖中的竞标者地址</li>
-            <li>保护用户隐私的DeFi协议</li>
+            <li>{t('address_decrypt.case_1')}</li>
+            <li>{t('address_decrypt.case_2')}</li>
+            <li>{t('address_decrypt.case_3')}</li>
+            <li>{t('address_decrypt.case_4')}</li>
           </ul>
         </div>
       </div>

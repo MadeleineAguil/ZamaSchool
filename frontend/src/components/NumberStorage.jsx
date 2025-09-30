@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useNumberStorage } from '../hooks/useContracts'
 import { useAccount } from 'wagmi'
+import { useI18n } from '../contexts/I18nContext'
 
 const NumberStorage = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address } = useAccount()
+  const { t } = useI18n()
   const {
     contractAddress,
     storeNumber,
@@ -22,7 +24,7 @@ const NumberStorage = () => {
 
   const handleEncryptNumber = async () => {
     if (!instance || !number || !address) {
-      alert('请确保钱包已连接且输入了数字')
+      alert(t('number_storage.ensure_wallet_and_input'))
       return
     }
 
@@ -39,10 +41,10 @@ const NumberStorage = () => {
         inputProof: encryptedInput.inputProof
       })
 
-      console.log('加密成功:', encryptedInput)
+      console.log('Encrypt success:', encryptedInput)
     } catch (error) {
-      console.error('加密失败:', error)
-      alert('加密失败: ' + error.message)
+      console.error('Encrypt failed:', error)
+      alert(t('number_storage.encrypt_failed') + ' ' + error.message)
     } finally {
       setIsEncrypting(false)
     }
@@ -50,7 +52,7 @@ const NumberStorage = () => {
 
   const handleStoreNumber = async () => {
     if (!encryptedData) {
-      alert('请先加密数字')
+      alert(t('number_storage.need_encrypt_first'))
       return
     }
 
@@ -59,20 +61,20 @@ const NumberStorage = () => {
       await storeNumber({
         args: [encryptedData.handle, encryptedData.inputProof]
       })
-      alert('数字存储成功！')
+      alert(t('number_storage.store_success'))
     } catch (error) {
-      console.error('存储失败:', error)
-      alert('存储失败: ' + error.message)
+      console.error('Store failed:', error)
+      alert(t('number_storage.store_failed') + ' ' + error.message)
     }
   }
 
   if (!isInitialized) {
     return (
       <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
-        <h3>步骤2: 数字加密存储</h3>
+        <h3>{t('number_storage.section_title')}</h3>
         <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-          <p>⏳ 请先完成步骤1中的SDK初始化</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行加密操作</p>
+          <p>⏳ {t('common.init_sdk_first')}</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>{t('common.sdk_required_for_crypto')}</p>
         </div>
       </div>
     )
@@ -80,18 +82,18 @@ const NumberStorage = () => {
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>步骤2: 数字加密存储</h3>
+      <h3>{t('number_storage.section_title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>学习目标：</h4>
+        <h4>{t('common.learning_objectives')}</h4>
         <ul>
-          <li>学习如何加密用户输入的数字</li>
-          <li>了解加密数据的结构</li>
-          <li>将加密数据存储到区块链</li>
+          <li>{t('number_storage.goal_1')}</li>
+          <li>{t('number_storage.goal_2')}</li>
+          <li>{t('number_storage.goal_3')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 智能合约代码:</h5>
+          <h5>📝 {t('common.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// NumberStorage.sol
 contract NumberStorage is SepoliaConfig {
@@ -122,7 +124,7 @@ contract NumberStorage is SepoliaConfig {
 }`}</pre>
           </div>
 
-          <h5>📝 前端加密代码:</h5>
+          <h5>📝 {t('common.frontend_encrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 前端加密和存储
 const encryptAndStore = async () => {
@@ -144,12 +146,12 @@ const encryptAndStore = async () => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>输入要加密的数字：</h4>
+        <h4>{t('number_storage.input_title')}</h4>
         <input
           type="number"
           value={number}
           onChange={(e) => setNumber(e.target.value)}
-          placeholder="输入一个32位整数"
+          placeholder={t('number_storage.input_placeholder')}
           style={{
             width: '200px',
             padding: '8px',
@@ -174,7 +176,7 @@ const encryptAndStore = async () => {
             marginRight: '10px'
           }}
         >
-          {isEncrypting ? '加密中...' : '加密数字'}
+          {isEncrypting ? t('number_storage.encrypting') : t('number_storage.encrypt_button')}
         </button>
 
         {encryptedData && (
@@ -189,55 +191,55 @@ const encryptAndStore = async () => {
               cursor: 'pointer'
             }}
           >
-            存储到区块链
+            {t('number_storage.store_button')}
           </button>
         )}
       </div>
 
       {encryptedData && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-          <h4>✅ 加密成功！</h4>
-          <p><strong>原始数字:</strong> {number}</p>
-          <p><strong>加密句柄:</strong></p>
+          <h4>✅ {t('number_storage.encrypt_success')}</h4>
+          <p><strong>{t('number_storage.original_number')}:</strong> {number}</p>
+          <p><strong>{t('number_storage.cipher_handle')}:</strong></p>
           <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
             {encryptedData.handle}
           </code>
           <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
-            📝 加密句柄是加密数据的唯一标识符，用于在智能合约中引用这个加密的数字。
+            📝 {t('number_storage.handle_note')}
           </p>
         </div>
       )}
 
       {storeData && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
-          <h4>✅ 存储成功！</h4>
-          <p><strong>交易哈希:</strong> {storeData.hash}</p>
-          <p><strong>合约地址:</strong> {contractAddress}</p>
+          <h4>✅ {t('number_storage.store_success')}</h4>
+          <p><strong>{t('common.tx_hash')}:</strong> {storeData.hash}</p>
+          <p><strong>{t('common.contract_address')}:</strong> {contractAddress}</p>
           <p style={{ fontSize: '14px', color: '#666' }}>
-            你的加密数字已安全存储在区块链上！
+            {t('number_storage.store_success_desc')}
           </p>
         </div>
       )}
 
       {storedNumber && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-          <h4>📖 已存储的数字</h4>
-          <p><strong>密文句柄:</strong></p>
+          <h4>📖 {t('number_storage.stored_title')}</h4>
+          <p><strong>{t('number_storage.cipher_handle')}:</strong></p>
           <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
             {storedNumber}
           </code>
           <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-            这是你存储在合约中的加密数字的句柄
+            {t('number_storage.stored_handle_desc')}
           </p>
         </div>
       )}
 
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>技术说明：</h5>
+        <h5>{t('common.tech_notes')}</h5>
         <ul>
-          <li><strong>euint32:</strong> 32位加密无符号整数类型</li>
-          <li><strong>加密句柄:</strong> 指向区块链上加密数据的引用</li>
-          <li><strong>输入证明:</strong> 证明加密数据的有效性</li>
+          <li><strong>euint32:</strong> {t('number_storage.euint32_desc')}</li>
+          <li><strong>{t('number_storage.cipher_handle')}:</strong> {t('number_storage.handle_desc')}</li>
+          <li><strong>{t('number_storage.input_proof')}:</strong> {t('number_storage.input_proof_desc')}</li>
         </ul>
       </div>
     </div>

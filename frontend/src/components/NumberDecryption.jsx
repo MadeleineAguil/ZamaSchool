@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
 import { useNumberStorage } from '../hooks/useContracts'
+import { useI18n } from '../contexts/I18nContext'
 
 const NumberDecryption = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
+  const { t } = useI18n()
   const [isDecrypting, setIsDecrypting] = useState(false)
   const [decryptedValue, setDecryptedValue] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
@@ -21,7 +23,7 @@ const NumberDecryption = () => {
 
   const handleDecryptNumber = async () => {
     if (!instance || !ciphertextHandle || !address || !walletClient) {
-      alert('请确保钱包已连接且输入了密文句柄')
+      alert(t('number_decrypt.ensure_wallet_and_handle'))
       return
     }
 
@@ -75,10 +77,10 @@ const NumberDecryption = () => {
       const decryptedValue = result[ciphertextHandle]
       setDecryptedValue(decryptedValue)
 
-      console.log('解密成功:', decryptedValue)
+      console.log('Decrypt success:', decryptedValue)
     } catch (error) {
-      console.error('解密失败:', error)
-      alert('解密失败: ' + error.message)
+      console.error('Decrypt failed:', error)
+      alert(t('number_decrypt.decrypt_failed') + ' ' + error.message)
     } finally {
       setIsDecrypting(false)
     }
@@ -88,27 +90,27 @@ const NumberDecryption = () => {
     // 从合约获取用户的加密数字
     try {
       if (!storedNumber) {
-        alert('您还没有在合约中存储数字，请先前往步骤2存储数字')
+        alert(t('number_decrypt.no_number_warning'))
         return
       }
 
       // 将storedNumber转换为字符串句柄
       const handle = storedNumber.toString()
       setCiphertextHandle(handle)
-      console.log('已从合约获取密文句柄:', handle)
+      console.log('Fetched handle from contract:', handle)
     } catch (error) {
-      console.error('获取失败:', error)
-      alert('获取失败: ' + error.message)
+      console.error('Fetch failed:', error)
+      alert(t('common.fetch_failed') + ' ' + error.message)
     }
   }
 
   if (!isInitialized) {
     return (
       <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
-        <h3>步骤3: 数字解密读取</h3>
+        <h3>{t('number_decrypt.section_title')}</h3>
         <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-          <p>⏳ 请先完成步骤1中的SDK初始化</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行解密操作</p>
+          <p>⏳ {t('common.init_sdk_first')}</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>{t('common.sdk_required_for_crypto')}</p>
         </div>
       </div>
     )
@@ -116,18 +118,18 @@ const NumberDecryption = () => {
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>步骤3: 数字解密读取</h3>
+      <h3>{t('number_decrypt.section_title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>学习目标：</h4>
+        <h4>{t('common.learning_objectives')}</h4>
         <ul>
-          <li>从智能合约获取加密数据</li>
-          <li>学习用户解密过程</li>
-          <li>理解密钥对生成和签名</li>
+          <li>{t('number_decrypt.goal_1')}</li>
+          <li>{t('number_decrypt.goal_2')}</li>
+          <li>{t('number_decrypt.goal_3')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 智能合约读取代码:</h5>
+          <h5>📝 {t('number_decrypt.contract_read_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 从合约读取加密数据
 function getStoredNumber() external view returns (euint32) {
@@ -140,7 +142,7 @@ function getStoredNumberByUser(address user) external view returns (euint32) {
 }`}</pre>
           </div>
 
-          <h5>📝 前端解密代码:</h5>
+          <h5>📝 {t('number_decrypt.frontend_decrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 用户解密流程
 const decryptData = async (ciphertextHandle) => {
@@ -188,17 +190,17 @@ const decryptData = async (ciphertextHandle) => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤1: 获取你的加密数字</h4>
+        <h4>{t('number_decrypt.step1_title')}</h4>
 
         {isGettingStored && (
           <div style={{ padding: '10px', backgroundColor: '#f0f8ff', borderRadius: '4px', marginBottom: '10px' }}>
-            ⏳ 正在从合约获取数字数据...
+            ⏳ {t('number_decrypt.fetching')}
           </div>
         )}
 
         {getStoredError && (
           <div style={{ padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px', marginBottom: '10px' }}>
-            ❌ 获取数字失败，请检查网络连接
+            ❌ {t('number_decrypt.fetch_error')}
           </div>
         )}
 
@@ -215,37 +217,37 @@ const decryptData = async (ciphertextHandle) => {
             opacity: (!address || isGettingStored) ? 0.6 : 1
           }}
         >
-          {storedNumber ? '✅ 从合约获取我的加密数字' : '从合约获取我的加密数字'}
+          {storedNumber ? t('number_decrypt.fetch_button_done') : t('number_decrypt.fetch_button')}
         </button>
 
         {!storedNumber && !isGettingStored && !getStoredError && (
           <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-            💡 提示：如果没有存储数字，请先前往步骤2存储一个数字
+            💡 {t('number_decrypt.tip_no_stored_number')}
           </p>
         )}
       </div>
 
       {ciphertextHandle && (
         <div style={{ marginBottom: '20px' }}>
-          <h4>步骤2: 密文句柄</h4>
+          <h4>{t('number_decrypt.step2_title')}</h4>
           <div style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '4px', marginBottom: '10px' }}>
             <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
               {ciphertextHandle}
             </code>
           </div>
           <p style={{ fontSize: '14px', color: '#666' }}>
-            这是从区块链获取的加密数据句柄
+            {t('number_decrypt.handle_desc')}
           </p>
         </div>
       )}
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤3: 解密数据</h4>
+        <h4>{t('number_decrypt.step3_title')}</h4>
         <input
           type="text"
           value={ciphertextHandle}
           onChange={(e) => setCiphertextHandle(e.target.value)}
-          placeholder="输入密文句柄（或点击上面按钮获取）"
+          placeholder={t('number_decrypt.input_placeholder_handle')}
           style={{
             width: '100%',
             padding: '8px',
@@ -268,31 +270,31 @@ const decryptData = async (ciphertextHandle) => {
             cursor: 'pointer'
           }}
         >
-          {isDecrypting ? '解密中...' : '解密数字'}
+          {isDecrypting ? t('number_decrypt.decrypting') : t('number_decrypt.decrypt_button')}
         </button>
       </div>
 
       {decryptedValue !== null && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
-          <h4>✅ 解密成功！</h4>
-          <p><strong>解密结果:</strong> {decryptedValue.toString()}</p>
+          <h4>✅ {t('number_decrypt.decrypt_success')}</h4>
+          <p><strong>{t('number_decrypt.result_label')}:</strong> {decryptedValue.toString()}</p>
           <p style={{ fontSize: '14px', color: '#666' }}>
-            🎉 恭喜！你已成功解密出原始数字。
+            🎉 {t('number_decrypt.congrats_text')}
           </p>
         </div>
       )}
 
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>解密过程说明：</h5>
+        <h5>{t('number_decrypt.process_notes')}</h5>
         <ol>
-          <li><strong>生成密钥对:</strong> 创建临时公私钥对用于解密</li>
-          <li><strong>创建EIP712签名:</strong> 证明用户身份和权限</li>
-          <li><strong>用户签名:</strong> 使用钱包对解密请求进行签名</li>
-          <li><strong>执行解密:</strong> 通过Relayer服务解密数据</li>
+          <li><strong>{t('number_decrypt.kp')}:</strong> {t('number_decrypt.kp_desc')}</li>
+          <li><strong>{t('number_decrypt.eip712')}:</strong> {t('number_decrypt.eip712_desc')}</li>
+          <li><strong>{t('number_decrypt.user_sig')}:</strong> {t('number_decrypt.user_sig_desc')}</li>
+          <li><strong>{t('number_decrypt.exec_decrypt')}:</strong> {t('number_decrypt.exec_decrypt_desc')}</li>
         </ol>
 
         <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
-          <strong>⚠️ 安全提醒:</strong> 只有拥有正确权限的用户才能解密数据。智能合约会通过ACL（访问控制列表）来管理解密权限。
+          <strong>⚠️ {t('number_decrypt.security_note')}:</strong> {t('number_decrypt.security_note_desc')}
         </div>
       </div>
     </div>

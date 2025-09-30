@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount } from 'wagmi'
 import { useOnchainDecryption } from '../hooks/useContracts'
+import { useI18n } from '../contexts/I18nContext'
 
 const OnchainDecryption = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address, chainId } = useAccount()
+  const { t } = useI18n()
 
   // 状态管理
   const [inputNumber, setInputNumber] = useState('')
@@ -39,7 +41,7 @@ const OnchainDecryption = () => {
   // 加密并存储数字
   const handleEncryptAndStore = async () => {
     if (!instance || !address || !inputNumber) {
-      alert('请确保钱包已连接、SDK已初始化并输入了数字')
+      alert(t('onchain.decrypt_prereq'))
       return
     }
 
@@ -53,10 +55,10 @@ const OnchainDecryption = () => {
       // 调用合约存储函数
       await storeEncryptedNumber(encryptedInput.handles[0])
 
-      alert('数字加密存储成功！')
+      alert(t('onchain.store_success'))
     } catch (error) {
-      console.error('加密存储失败:', error)
-      alert('加密存储失败: ' + error.message)
+      console.error('Encrypt store failed:', error)
+      alert(t('onchain.store_failed') + ' ' + error.message)
     } finally {
       setIsEncrypting(false)
     }
@@ -65,17 +67,17 @@ const OnchainDecryption = () => {
   // 请求链上解密
   const handleRequestDecryption = async () => {
     if (!address) {
-      alert('请连接钱包')
+      alert(t('common.connect_wallet'))
       return
     }
 
     try {
       // 调用合约解密请求函数
       await requestDecryptNumber()
-      alert('解密请求已提交，请等待链上解密完成...')
+      alert(t('onchain.request_submitted'))
     } catch (error) {
-      console.error('请求解密失败:', error)
-      alert('请求解密失败: ' + error.message)
+      console.error('Request decrypt failed:', error)
+      alert(t('onchain.request_failed') + ' ' + error.message)
     }
   }
 
@@ -83,20 +85,20 @@ const OnchainDecryption = () => {
   const handleReset = async () => {
     try {
       await resetDecryptionState()
-      alert('解密状态已重置')
+      alert(t('onchain.reset_done'))
     } catch (error) {
-      console.error('重置失败:', error)
-      alert('重置失败: ' + error.message)
+      console.error('Reset failed:', error)
+      alert(t('onchain.reset_failed') + ' ' + error.message)
     }
   }
 
   if (!isInitialized) {
     return (
       <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
-        <h3>步骤7: 链上解密请求</h3>
+        <h3>{t('onchain.section_title')}</h3>
         <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-          <p>⏳ 请先完成步骤1中的SDK初始化</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行解密操作</p>
+          <p>⏳ {t('common.init_sdk_first')}</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>{t('common.sdk_required_for_crypto')}</p>
         </div>
       </div>
     )
@@ -104,18 +106,18 @@ const OnchainDecryption = () => {
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>步骤7: 链上解密请求</h3>
+      <h3>{t('onchain.section_title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>学习目标：</h4>
+        <h4>{t('common.learning_objectives')}</h4>
         <ul>
-          <li>理解requestDecryption机制</li>
-          <li>学习异步解密回调流程</li>
-          <li>掌握链上解密的最佳实践</li>
+          <li>{t('onchain.goal_1')}</li>
+          <li>{t('onchain.goal_2')}</li>
+          <li>{t('onchain.goal_3')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 链上解密合约代码:</h5>
+          <h5>📝 {t('onchain.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 请求异步解密
 function requestDecryptNumber() external returns (uint256) {
@@ -166,7 +168,7 @@ function callbackDecryptNumber(
 }`}</pre>
           </div>
 
-          <h5>📝 前端解密请求代码:</h5>
+          <h5>📝 {t('onchain.frontend_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 1. 存储加密数字
 const input = instance.createEncryptedInput(contractAddress, userAddress)
@@ -190,12 +192,12 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
 
       {/* 步骤1: 输入和存储数字 */}
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤1: 输入并存储加密数字</h4>
+        <h4>{t('onchain.step1_title')}</h4>
         <input
           type="number"
           value={inputNumber}
           onChange={(e) => setInputNumber(e.target.value)}
-          placeholder="输入一个数字（例如: 42）"
+          placeholder={t('onchain.input_placeholder')}
           style={{
             padding: '8px',
             margin: '10px 0',
@@ -219,13 +221,13 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
             opacity: (!inputNumber || isEncrypting || isWriting) ? 0.6 : 1
           }}
         >
-          {isEncrypting || isWriting ? '加密存储中...' : '加密并存储数字'}
+          {isEncrypting || isWriting ? t('onchain.storing') : t('onchain.encrypt_and_store')}
         </button>
       </div>
 
       {/* 步骤2: 请求解密 */}
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤2: 请求链上解密</h4>
+        <h4>{t('onchain.step2_title')}</h4>
         <button
           onClick={handleRequestDecryption}
           disabled={isWriting}
@@ -240,7 +242,7 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
             opacity: isWriting ? 0.6 : 1
           }}
         >
-          {isWriting ? '请求中...' : '请求解密'}
+          {isWriting ? t('onchain.requesting') : t('onchain.request_decrypt')}
         </button>
 
         <button
@@ -256,23 +258,23 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
             opacity: isWriting ? 0.6 : 1
           }}
         >
-          重置状态
+          {t('onchain.reset_state')}
         </button>
       </div>
 
       {/* 解密状态显示 */}
       <div style={{ marginBottom: '20px' }}>
-        <h4>步骤3: 解密状态监控</h4>
+        <h4>{t('onchain.step3_title')}</h4>
 
         {isGettingStatus && (
           <div style={{ padding: '10px', backgroundColor: '#f0f8ff', borderRadius: '4px', marginBottom: '10px' }}>
-            ⏳ 正在获取解密状态...
+            ⏳ {t('onchain.getting_status')}
           </div>
         )}
 
         {getStatusError && (
           <div style={{ padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px', marginBottom: '10px' }}>
-            ❌ 获取状态失败，请检查网络连接
+            ❌ {t('onchain.get_status_failed')}
           </div>
         )}
 
@@ -283,29 +285,28 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
             borderRadius: '4px',
             border: decryptionStatus[0] ? '1px solid #ffeaa7' : '1px solid #c3e6cb'
           }}>
-            <h5>解密状态信息：</h5>
+            <h5>{t('onchain.status_title')}</h5>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '10px', alignItems: 'center' }}>
-              <span><strong>解密状态:</strong></span>
+              <span><strong>{t('onchain.status')}:</strong></span>
               <span style={{ color: decryptionStatus[0] ? '#856404' : '#155724' }}>
-                {decryptionStatus[0] ? '⏳ 解密进行中...' : '✅ 解密完成'}
+                {decryptionStatus[0] ? '⏳ ' + t('onchain.status_pending') : '✅ ' + t('onchain.status_done')}
               </span>
 
-              <span><strong>请求ID:</strong></span>
+              <span><strong>{t('onchain.request_id')}:</strong></span>
               <code style={{ fontSize: '12px' }}>
-                {decryptionStatus[1] ? decryptionStatus[1].toString() : '无'}
+                {decryptionStatus[1] ? decryptionStatus[1].toString() : t('onchain.none')}
               </code>
 
-              <span><strong>解密结果:</strong></span>
+              <span><strong>{t('onchain.decrypted_result')}:</strong></span>
               <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#155724' }}>
-                {decryptionStatus[2] ? decryptionStatus[2].toString() : '等待解密...'}
+                {decryptionStatus[2] ? decryptionStatus[2].toString() : t('onchain.waiting')}
               </span>
             </div>
 
             {decryptionStatus[0] && (
               <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#ffeaa7', borderRadius: '4px' }}>
                 <p style={{ margin: 0, fontSize: '14px' }}>
-                  ⚡ 解密正在进行中，这个过程通常需要1-3分钟。
-                  解密由Zama的KMS网络异步完成，完成后会自动更新状态。
+                  ⚡ {t('onchain.pending_hint_line1')} {t('onchain.pending_hint_line2')}
                 </p>
               </div>
             )}
@@ -313,7 +314,7 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
             {!decryptionStatus[0] && decryptionStatus[2] && decryptionStatus[2] !== '0' && (
               <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#c3e6cb', borderRadius: '4px' }}>
                 <p style={{ margin: 0, fontSize: '14px' }}>
-                  🎉 恭喜！链上解密完成。原始数字 <strong>{inputNumber}</strong> 已成功解密为 <strong>{decryptionStatus[2].toString()}</strong>
+                  🎉 {t('onchain.done_hint_prefix')} <strong>{inputNumber}</strong> {t('onchain.done_hint_middle')} <strong>{decryptionStatus[2].toString()}</strong>
                 </p>
               </div>
             )}
@@ -323,7 +324,7 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
         {!decryptionStatus && !isGettingStatus && (
           <div style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
             <p style={{ margin: 0, color: '#666' }}>
-              💡 请先存储一个加密数字，然后请求解密来查看状态
+              💡 {t('onchain.tip_store_then_request')}
             </p>
           </div>
         )}
@@ -331,31 +332,31 @@ const decryptionStatus = await contract.getDecryptionStatus(userAddress)
 
       {/* 教学说明 */}
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>链上解密特点：</h5>
+        <h5>{t('onchain.features_title')}</h5>
         <ul>
-          <li><strong>异步处理:</strong> 解密请求提交后，由KMS网络异步处理</li>
-          <li><strong>安全验证:</strong> 解密结果包含密码学证明，确保结果正确性</li>
-          <li><strong>状态管理:</strong> 合约维护解密状态，防止重复请求</li>
-          <li><strong>事件通知:</strong> 解密完成时发出事件，便于前端监听</li>
+          <li><strong>{t('onchain.async')}:</strong> {t('onchain.async_desc')}</li>
+          <li><strong>{t('onchain.security')}:</strong> {t('onchain.security_desc')}</li>
+          <li><strong>{t('onchain.state')}:</strong> {t('onchain.state_desc')}</li>
+          <li><strong>{t('onchain.events')}:</strong> {t('onchain.events_desc')}</li>
         </ul>
 
         <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e3f2fd', borderRadius: '4px' }}>
-          <h5>💡 应用场景：</h5>
+          <h5>💡 {t('onchain.use_cases')}</h5>
           <ul>
-            <li>拍卖结束后公开最高出价</li>
-            <li>投票结束后公布投票结果</li>
-            <li>游戏中随机数的公开揭晓</li>
-            <li>隐私计算结果的条件性公开</li>
+            <li>{t('onchain.case_1')}</li>
+            <li>{t('onchain.case_2')}</li>
+            <li>{t('onchain.case_3')}</li>
+            <li>{t('onchain.case_4')}</li>
           </ul>
         </div>
 
         <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
-          <h5>⚠️ 注意事项：</h5>
+          <h5>⚠️ {t('onchain.caveats')}</h5>
           <ul>
-            <li>解密过程不可逆，一旦公开就无法撤回</li>
-            <li>解密需要消耗一定的gas费用</li>
-            <li>网络拥堵时解密可能需要更长时间</li>
-            <li>确保在适当的时机调用解密请求</li>
+            <li>{t('onchain.irreversible')}</li>
+            <li>{t('onchain.gas')}</li>
+            <li>{t('onchain.congestion')}</li>
+            <li>{t('onchain.right_timing')}</li>
           </ul>
         </div>
       </div>

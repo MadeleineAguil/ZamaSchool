@@ -3,10 +3,12 @@ import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount } from 'wagmi'
 import { isAddress } from 'viem'
 import { getContractAddress } from '../config/contracts'
+import { useI18n } from '../contexts/I18nContext'
 
 const AddressStorage = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address, chainId } = useAccount()
+  const { t } = useI18n()
   const [inputAddress, setInputAddress] = useState('')
   const [isEncrypting, setIsEncrypting] = useState(false)
   const [encryptedData, setEncryptedData] = useState(null)
@@ -28,12 +30,12 @@ const AddressStorage = () => {
 
   const handleEncryptAddress = async () => {
     if (!instance || !address) {
-      alert('请确保钱包已连接')
+      alert(t('common.connect_wallet'))
       return
     }
 
     if (!useRandomAddress && (!inputAddress || !isAddress(inputAddress))) {
-      alert('请输入有效的以太坊地址')
+      alert(t('address_storage.invalid_eth_address'))
       return
     }
 
@@ -63,10 +65,10 @@ const AddressStorage = () => {
         })
       }
 
-      console.log('地址加密准备完成')
+      console.log('Address encryption prepared')
     } catch (error) {
-      console.error('加密失败:', error)
-      alert('加密失败: ' + error.message)
+      console.error('Encrypt failed:', error)
+      alert(t('address_storage.encrypt_failed') + ' ' + error.message)
     } finally {
       setIsEncrypting(false)
     }
@@ -74,31 +76,31 @@ const AddressStorage = () => {
 
   const handleStoreAddress = async () => {
     if (!encryptedData) {
-      alert('请先准备地址数据')
+      alert(t('address_storage.need_prepare_first'))
       return
     }
 
     try {
       // 这里将调用合约存储加密地址
       if (encryptedData.isRandomAddress) {
-        console.log('调用合约的storeRandomAddress函数...')
+        console.log('Call contract storeRandomAddress...')
       } else {
-        console.log('调用合约的storeAddress函数...')
+        console.log('Call contract storeAddress...')
       }
-      setTxHash('0x模拟交易哈希...')
+      setTxHash('0xMOCK_TX_HASH')
     } catch (error) {
-      console.error('存储失败:', error)
-      alert('存储失败: ' + error.message)
+      console.error('Store failed:', error)
+      alert(t('address_storage.store_failed') + ' ' + error.message)
     }
   }
 
   if (!isInitialized) {
     return (
       <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0', opacity: 0.6 }}>
-        <h3>步骤4: 地址加密存储</h3>
+        <h3>{t('address_storage.section_title')}</h3>
         <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-          <p>⏳ 请先完成步骤1中的SDK初始化</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>SDK必须初始化后才能进行加密操作</p>
+          <p>⏳ {t('common.init_sdk_first')}</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>{t('common.sdk_required_for_crypto')}</p>
         </div>
       </div>
     )
@@ -106,18 +108,18 @@ const AddressStorage = () => {
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>步骤4: 地址加密存储</h3>
+      <h3>{t('address_storage.section_title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>学习目标：</h4>
+        <h4>{t('common.learning_objectives')}</h4>
         <ul>
-          <li>学习如何加密以太坊地址</li>
-          <li>了解随机地址生成</li>
-          <li>掌握eaddress数据类型的使用</li>
+          <li>{t('address_storage.goal_1')}</li>
+          <li>{t('address_storage.goal_2')}</li>
+          <li>{t('address_storage.goal_3')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 智能合约代码:</h5>
+          <h5>📝 {t('common.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// AddressStorage.sol
 contract AddressStorage is SepoliaConfig {
@@ -166,7 +168,7 @@ contract AddressStorage is SepoliaConfig {
 }`}</pre>
           </div>
 
-          <h5>📝 前端地址加密代码:</h5>
+          <h5>📝 {t('address_storage.frontend_encrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 加密地址的两种方式
 
@@ -194,7 +196,7 @@ const storeRandomAddress = async () => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>选择地址输入方式：</h4>
+        <h4>{t('address_storage.select_input_method')}</h4>
         <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
             <input
@@ -203,7 +205,7 @@ const storeRandomAddress = async () => {
               onChange={() => setUseRandomAddress(false)}
               style={{ marginRight: '8px' }}
             />
-            手动输入地址
+            {t('address_storage.manual_input')}
           </label>
           <label style={{ display: 'flex', alignItems: 'center' }}>
             <input
@@ -212,19 +214,19 @@ const storeRandomAddress = async () => {
               onChange={() => setUseRandomAddress(true)}
               style={{ marginRight: '8px' }}
             />
-            使用随机生成的地址
+            {t('address_storage.use_random')}
           </label>
         </div>
       </div>
 
       {!useRandomAddress ? (
         <div style={{ marginBottom: '20px' }}>
-          <h4>输入以太坊地址：</h4>
+          <h4>{t('address_storage.input_title')}</h4>
           <input
             type="text"
             value={inputAddress}
             onChange={(e) => setInputAddress(e.target.value)}
-            placeholder="0x742d35cc6635c0532925a3b8d"
+            placeholder={t('address_storage.input_placeholder')}
             style={{
               width: '100%',
               padding: '8px',
@@ -246,13 +248,13 @@ const storeRandomAddress = async () => {
               fontSize: '12px'
             }}
           >
-            生成示例地址
+            {t('address_storage.generate_example')}
           </button>
         </div>
       ) : (
         <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-          <h4>随机地址模式</h4>
-          <p>将在智能合约中生成一个随机的加密地址</p>
+          <h4>{t('address_storage.random_mode_title')}</h4>
+          <p>{t('address_storage.random_mode_desc')}</p>
         </div>
       )}
 
@@ -270,7 +272,7 @@ const storeRandomAddress = async () => {
             marginRight: '10px'
           }}
         >
-          {isEncrypting ? '准备中...' : '准备加密地址'}
+          {isEncrypting ? t('address_storage.preparing') : t('address_storage.prepare_encrypt')}
         </button>
 
         {encryptedData && (
@@ -285,55 +287,55 @@ const storeRandomAddress = async () => {
               cursor: 'pointer'
             }}
           >
-            存储到区块链
+            {t('number_storage.store_button')}
           </button>
         )}
       </div>
 
       {encryptedData && !encryptedData.isRandomAddress && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-          <h4>✅ 地址加密成功！</h4>
-          <p><strong>原始地址:</strong></p>
+          <h4>✅ {t('address_storage.encrypt_success')}</h4>
+          <p><strong>{t('address_storage.original_address')}:</strong></p>
           <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
             {encryptedData.originalAddress}
           </code>
-          <p><strong>加密句柄:</strong></p>
+          <p><strong>{t('number_storage.cipher_handle')}:</strong></p>
           <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
             {encryptedData.handle}
           </code>
           <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
-            📝 eaddress是160位的加密地址类型，相当于euint160。
+            📝 {t('address_storage.eaddress_note')}
           </p>
         </div>
       )}
 
       {encryptedData && encryptedData.isRandomAddress && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-          <h4>✅ 随机地址模式准备就绪！</h4>
-          <p>将在智能合约中调用FHE.randEaddress()生成随机加密地址</p>
+          <h4>✅ {t('address_storage.random_ready')}</h4>
+          <p>{t('address_storage.random_ready_desc')}</p>
           <p style={{ fontSize: '14px', color: '#666' }}>
-            🎲 每次调用都会生成一个全新的随机地址
+            🎲 {t('address_storage.random_tip')}
           </p>
         </div>
       )}
 
       {txHash && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
-          <h4>✅ 存储成功！</h4>
-          <p><strong>交易哈希:</strong> {txHash}</p>
+          <h4>✅ {t('number_storage.store_success')}</h4>
+          <p><strong>{t('common.tx_hash')}:</strong> {txHash}</p>
           <p style={{ fontSize: '14px', color: '#666' }}>
-            你的加密地址已安全存储在区块链上！
+            {t('address_storage.store_success_desc')}
           </p>
         </div>
       )}
 
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>技术说明：</h5>
+        <h5>{t('common.tech_notes')}</h5>
         <ul>
-          <li><strong>eaddress:</strong> 160位加密地址类型，等同于euint160</li>
-          <li><strong>地址验证:</strong> 确保输入的是有效的以太坊地址格式</li>
-          <li><strong>随机生成:</strong> 使用FHE.randEaddress()在合约中生成随机地址</li>
-          <li><strong>隐私保护:</strong> 地址信息完全加密，只有授权用户可以解密</li>
+          <li><strong>eaddress:</strong> {t('address_storage.eaddress_desc')}</li>
+          <li><strong>{t('address_storage.address_validation')}:</strong> {t('address_storage.address_validation_desc')}</li>
+          <li><strong>{t('address_storage.random_gen')}:</strong> {t('address_storage.random_gen_desc')}</li>
+          <li><strong>{t('address_storage.privacy')}:</strong> {t('address_storage.privacy_desc')}</li>
         </ul>
       </div>
     </div>
