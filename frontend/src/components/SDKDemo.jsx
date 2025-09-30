@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount } from 'wagmi'
+import { useI18n } from '../contexts/I18nContext'
 
 const SDKDemo = () => {
   const { instance, isLoading, error, isInitialized, initFHEVM } = useFHEVM()
   const [installationComplete, setInstallationComplete] = useState(false)
   const { address } = useAccount()
+  const { t } = useI18n()
 
   const handleInstallSDK = () => {
     // Simulate installation process
@@ -14,30 +16,29 @@ const SDKDemo = () => {
 
   const handleInitSDK = async () => {
     if (!address) {
-      alert('Please connect your wallet first')
+      alert(t('sdk.connect_wallet'))
       return
     }
     console.log('Starting SDK initialization...')
     const success = await initFHEVM()
     console.log('Initialization complete, result:', success)
-    // Note: State may not be updated immediately due to React's asynchronous state updates
   }
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
-      <h3>Step 1: Zama Frontend SDK Introduction</h3>
+      <h3>{t('sdk.title')}</h3>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>What is Zama SDK?</h4>
-        <p>Zama SDK is a JavaScript library used to interact with FHEVM (Fully Homomorphic Encryption Virtual Machine) in frontend applications.</p>
+        <h4>{t('sdk.what_is')}</h4>
+        <p>{t('sdk.what_is_desc')}</p>
         <ul>
-          <li>Supports data encryption and decryption</li>
-          <li>Seamless integration with smart contracts</li>
-          <li>Protects user data privacy</li>
+          <li>{t('sdk.feature_1')}</li>
+          <li>{t('sdk.feature_2')}</li>
+          <li>{t('sdk.feature_3')}</li>
         </ul>
 
         <div style={{ marginTop: '15px' }}>
-          <h5>📝 Frontend Code Example:</h5>
+          <h5>📝 {t('sdk.code_example')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
             <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 1. Import SDK
 import { createInstance, SepoliaConfig } from '@zama-fhe/relayer-sdk'
@@ -63,7 +64,7 @@ await contract.storeNumber(
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <h4>Step 1: Install SDK</h4>
+        <h4>{t('sdk.step1')}</h4>
         <div style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '4px', marginBottom: '10px' }}>
           <code>npm install @zama-fhe/relayer-sdk</code>
         </div>
@@ -80,25 +81,25 @@ await contract.storeNumber(
               cursor: 'pointer'
             }}
           >
-            Click to Install SDK
+            {t('sdk.install_btn')}
           </button>
         ) : (
           <div style={{ color: 'green', marginBottom: '20px' }}>
-            ✅ SDK installed successfully!
+            ✅ {t('sdk.install_success')}
           </div>
         )}
       </div>
 
       {installationComplete && (
         <div style={{ marginBottom: '20px' }}>
-          <h4>Step 2: Initialize SDK</h4>
+          <h4>{t('sdk.step2')}</h4>
           <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-            Click the button below to initialize the Zama SDK. This will create an FHEVM instance for subsequent encryption operations.
+            {t('sdk.init_desc')}
           </p>
 
           {!address && (
             <div style={{ color: '#ff9800', marginBottom: '10px' }}>
-              ⚠️ Please connect your wallet before initializing the SDK
+              ⚠️ {t('sdk.connect_wallet')}
             </div>
           )}
 
@@ -115,17 +116,17 @@ await contract.storeNumber(
                 cursor: address ? 'pointer' : 'not-allowed'
               }}
             >
-              {isLoading ? 'Initializing...' : 'Click to Initialize SDK'}
+              {isLoading ? t('sdk.initializing') : t('sdk.init_btn')}
             </button>
           ) : (
             <div style={{ color: 'green' }}>
-              ✅ SDK initialized successfully!
+              ✅ {t('sdk.init_success')}
             </div>
           )}
 
           {error && (
             <div style={{ color: 'red', marginTop: '10px' }}>
-              ❌ Initialization failed: {error}
+              ❌ {t('sdk.init_failed')} {error}
             </div>
           )}
         </div>
@@ -133,33 +134,33 @@ await contract.storeNumber(
 
       {instance && isInitialized && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
-          <h4>🎉 FHEVM Instance Created</h4>
-          <p>SDK has been successfully initialized, now you can perform encryption operations!</p>
+          <h4>🎉 {t('sdk.instance_created')}</h4>
+          <p>{t('sdk.instance_desc')}</p>
           <div style={{ marginTop: '10px' }}>
-            <h5>Instance Configuration:</h5>
+            <h5>{t('sdk.config_title')}</h5>
             <ul style={{ fontSize: '12px' }}>
-              <li>Network: Sepolia Testnet</li>
-              <li>Chain ID: 11155111</li>
-              <li>Gateway Chain ID: 55815</li>
-              <li>Relayer Service: Connected</li>
+              <li>{t('sdk.config_network')}</li>
+              <li>{t('sdk.config_chain')}</li>
+              <li>{t('sdk.config_gateway')}</li>
+              <li>{t('sdk.config_relayer')}</li>
             </ul>
           </div>
         </div>
       )}
 
       <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <h5>What You Will Learn Next:</h5>
+        <h5>{t('sdk.next_learn')}</h5>
         <ol>
-          <li>Encrypted number storage</li>
-          <li>Number decryption and retrieval</li>
-          <li>Encrypted address storage</li>
-          <li>Address decryption and retrieval</li>
-          <li>FHE calculation operations</li>
+          <li>{t('sdk.next_1')}</li>
+          <li>{t('sdk.next_2')}</li>
+          <li>{t('sdk.next_3')}</li>
+          <li>{t('sdk.next_4')}</li>
+          <li>{t('sdk.next_5')}</li>
         </ol>
 
         {!isInitialized && (
           <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
-            <strong>📝 Note:</strong> Please complete SDK initialization before proceeding to the next step. The initialization process creates a connection to the Zama network, which is a prerequisite for performing encryption operations.
+            <strong>📝 {t('sdk.note')}</strong> {t('sdk.note_desc')}
           </div>
         )}
       </div>
