@@ -9,9 +9,9 @@ const I18nContext = createContext({
 const translations = {
   en: {
     // General
-    'app.title': 'ZamaSchool - FHE Learning Platform',
+    'app.title': 'Zama Learning Platform',
     'app.subtitle': "Learn Zama's Fully Homomorphic Encryption technology and experience privacy-preserving blockchain computing",
-    'sidebar.title': 'Zama Learning Catalog',
+    'sidebar.title': 'ZamaSchool',
     'sidebar.subtitle': 'Click chapter to start learning',
     'progress.title': 'Learning Progress',
     'wallet.connected': 'Wallet Connected',
@@ -164,9 +164,9 @@ const translations = {
     'sdk.note_desc': 'Please complete SDK initialization before proceeding to the next step. The initialization process creates a connection to the Zama network, which is a prerequisite for performing encryption operations.'
   },
   zh: {
-    'app.title': 'ZamaSchool - FHE 学习平台',
+    'app.title': 'FHE 学习平台',
     'app.subtitle': '学习 Zama 的全同态加密技术，体验隐私保护的区块链计算',
-    'sidebar.title': 'Zama 学习目录',
+    'sidebar.title': 'ZamaSchool',
     'sidebar.subtitle': '点击章节开始学习',
     'progress.title': '学习进度',
     'wallet.connected': '钱包已连接',
@@ -315,9 +315,9 @@ const translations = {
     'sdk.note_desc': '请完成 SDK 初始化后再进行下一步操作。初始化过程会创建与 Zama 网络的连接，这是进行加密操作的前提条件。'
   },
   fr: {
-    'app.title': 'ZamaSchool - Plateforme d’apprentissage FHE',
+    'app.title': 'Plateforme d’apprentissage Zama',
     'app.subtitle': "Apprenez le chiffrement homomorphe complet de Zama et découvrez l’informatique préservant la vie privée sur blockchain",
-    'sidebar.title': 'Catalogue d’apprentissage Zama',
+    'sidebar.title': 'ZamaSchool',
     'sidebar.subtitle': 'Cliquez sur un chapitre pour commencer',
     'progress.title': 'Progression',
     'wallet.connected': 'Portefeuille connecté',
