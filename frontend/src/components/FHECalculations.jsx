@@ -161,7 +161,10 @@ const FHECalculations = () => {
       )
 
       const decrypted = result[handle]
-      setCalculationResult(prev => ({ ...prev, decryptedResult: decrypted }))
+      const decryptedStr = (decrypted !== null && decrypted !== undefined)
+        ? (typeof decrypted === 'string' ? decrypted : (decrypted.toString ? decrypted.toString() : String(decrypted)))
+        : ''
+      setCalculationResult(prev => ({ ...prev, decryptedResult: decryptedStr }))
 
     } catch (error) {
       console.error('Decrypt failed:', error)
@@ -478,7 +481,7 @@ const fheOperations = {
             </button>
           </div>
 
-          {calculationResult.decryptedResult && (
+          {calculationResult.decryptedResult !== undefined && (
             <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e8f5e8', borderRadius: '4px' }}>
               <h5>🎉 {t('fhe_calc.decrypted_result')}:</h5>
               <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#2E7D32' }}>
