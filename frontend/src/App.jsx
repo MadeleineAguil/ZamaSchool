@@ -13,6 +13,7 @@ import AddressDecryption from './components/AddressDecryption'
 import OnchainDecryption from './components/OnchainDecryption'
 import FHECalculations from './components/FHECalculations'
 import NumberComparison from './components/NumberComparison'
+import ConfidentialToken from './components/ConfidentialToken'
 
 // Import Context
 import { FHEVMProvider } from './contexts/FHEVMContext'
@@ -89,6 +90,13 @@ const chapters = [
     icon: '⚖️',
     fallbackIcon: '⚖',
     component: NumberComparison
+  },
+  {
+    id: 'confidential-token',
+    titleKey: 'chapter.confidential_token',
+    icon: '💱',
+    fallbackIcon: '$',
+    component: ConfidentialToken
   },
   {
     id: 'conclusion',
