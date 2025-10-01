@@ -322,9 +322,9 @@ const performFHECalculation = async (operation, operand) => {
   }
 }
 
-// Get calculation result
+// Get calculation result for current user
 const getCalculationResult = async () => {
-  return await contract.getCalculationResult()
+  return await contract.getCalculationResult(userAddress)
 }
 
 // Supported FHE operation types
