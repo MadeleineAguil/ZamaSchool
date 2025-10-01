@@ -210,6 +210,11 @@ const ConfidentialToken = () => {
           <div style={{ marginTop: '10px' }}>
             <button onClick={handleDecryptBalance} disabled={loading} style={{ padding: '8px 12px', background: '#4CAF50', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.decrypt_balance')}</button>
           </div>
+          {decBalance !== null && (
+            <div style={{ marginTop: '12px', background: '#e8f5e8', padding: '10px', borderRadius: '6px' }}>
+              <p style={{ margin: 0 }}><strong>{t('ctoken.decrypted_balance_human')}:</strong> {decBalanceHuman}</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -222,17 +227,12 @@ const ConfidentialToken = () => {
         <div style={{ marginTop: '10px' }}>
           <button onClick={handleTransfer} disabled={loading || !transferTo || !transferAmt} style={{ padding: '10px 16px', background: '#9C27B0', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.transfer_btn')}</button>
         </div>
+        <div>Transfer Amount would be encrypted.</div>
       </div>
 
-      {(txHash || decBalance !== null) && (
+      {(txHash) && (
         <div style={{ background: '#f0f8ff', padding: '12px', borderRadius: '8px' }}>
-          {txHash && (<p><strong>{t('common.tx_hash')}:</strong> {txHash}</p>)}
-          {decBalance !== null && (
-            <>
-              <p><strong>{t('ctoken.decrypted_balance')}:</strong> {decBalance}</p>
-              <p><strong>{t('ctoken.decrypted_balance_human')}:</strong> {decBalanceHuman}</p>
-            </>
-          )}
+          <p><strong>{t('common.tx_hash')}:</strong> {txHash}</p>
         </div>
       )}
 
