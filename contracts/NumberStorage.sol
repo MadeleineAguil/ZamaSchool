@@ -36,7 +36,7 @@ contract NumberStorage is SepoliaConfig {
         return comparisonResults[user];
     }
 
-    // 加法运算
+    // Addition operation
     function addToStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -51,7 +51,7 @@ contract NumberStorage is SepoliaConfig {
         emit CalculationPerformed(msg.sender, "addition");
     }
 
-    // 减法运算
+    // Subtraction operation
     function subtractFromStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -66,7 +66,7 @@ contract NumberStorage is SepoliaConfig {
         emit CalculationPerformed(msg.sender, "subtraction");
     }
 
-    // 乘法运算
+    // Multiplication operation
     function multiplyStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -81,7 +81,7 @@ contract NumberStorage is SepoliaConfig {
         emit CalculationPerformed(msg.sender, "multiplication");
     }
 
-    // 除法运算 (使用常数除数)
+    // Division operation (uses a plaintext divisor)
     function divideStoredNumber(uint32 divisor) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
         require(divisor > 0, "Divisor must be greater than 0");
@@ -96,7 +96,7 @@ contract NumberStorage is SepoliaConfig {
         emit CalculationPerformed(msg.sender, "division");
     }
 
-    // 两个用户存储数字相加
+    // Add two users' stored numbers
     function addTwoStoredNumbers(address userA, address userB) external {
         require(FHE.isInitialized(userNumbers[userA]), "UserA has no stored number");
         require(FHE.isInitialized(userNumbers[userB]), "UserB has no stored number");
@@ -111,9 +111,9 @@ contract NumberStorage is SepoliaConfig {
         emit CalculationPerformed(msg.sender, "add_two_users");
     }
 
-    // === 数字比较功能 ===
+    // === Encrypted number comparison ===
 
-    // 比较存储的数字是否等于输入数字
+    // Compare if the stored number equals the provided input number
     function compareStoredNumberEqual(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -128,7 +128,7 @@ contract NumberStorage is SepoliaConfig {
         emit ComparisonPerformed(msg.sender, "equal");
     }
 
-    // 比较存储的数字是否大于输入数字
+    // Compare if the stored number is greater than the input number
     function compareStoredNumberGreater(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -143,7 +143,7 @@ contract NumberStorage is SepoliaConfig {
         emit ComparisonPerformed(msg.sender, "greater");
     }
 
-    // 比较存储的数字是否小于输入数字
+    // Compare if the stored number is less than the input number
     function compareStoredNumberLess(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -158,7 +158,7 @@ contract NumberStorage is SepoliaConfig {
         emit ComparisonPerformed(msg.sender, "less");
     }
 
-    // 比较存储的数字是否大于等于输入数字
+    // Compare if the stored number is greater than or equal to the input number
     function compareStoredNumberGreaterOrEqual(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -173,7 +173,7 @@ contract NumberStorage is SepoliaConfig {
         emit ComparisonPerformed(msg.sender, "greater_or_equal");
     }
 
-    // 比较存储的数字是否小于等于输入数字
+    // Compare if the stored number is less than or equal to the input number
     function compareStoredNumberLessOrEqual(externalEuint32 inputNumber, bytes calldata inputProof) external {
         require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number found");
 
@@ -188,7 +188,7 @@ contract NumberStorage is SepoliaConfig {
         emit ComparisonPerformed(msg.sender, "less_or_equal");
     }
 
-    // 比较两个用户存储的数字大小
+    // Compare the relative order of two users' stored numbers
     function compareTwoUsersNumbers(address userA, address userB, string calldata comparisonType) external {
         require(FHE.isInitialized(userNumbers[userA]), "UserA has no stored number");
         require(FHE.isInitialized(userNumbers[userB]), "UserB has no stored number");

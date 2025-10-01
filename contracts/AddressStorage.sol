@@ -35,9 +35,9 @@ contract AddressStorage is SepoliaConfig {
             revert NoStoredAddressFound();
         }
 
-        // 返回加密的比较结果而不是解密的结果
-        // 用户可以通过前端SDK解密这个结果
-        return userAddresses[userA]; // 简化实现，返回第一个用户的地址
+        // Return an encrypted value rather than a cleartext comparison result.
+        // The frontend SDK can decrypt to interpret the outcome.
+        return userAddresses[userA]; // Simplified demo: return user A's encrypted address
     }
 
     function isAddressEqual(address user, address targetAddress) external view returns (eaddress) {
@@ -45,7 +45,7 @@ contract AddressStorage is SepoliaConfig {
             revert NoStoredAddressFound();
         }
 
-        // 返回用户的加密地址，让前端处理比较
+        // Return the user's encrypted address; frontend can perform decryption
         return userAddresses[user];
     }
 }
