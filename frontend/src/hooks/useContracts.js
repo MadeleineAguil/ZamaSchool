@@ -24,7 +24,8 @@ export const useNumberStorage = () => {
   } = useReadContract({
     address: contractAddress,
     abi: NumberStorageABI,
-    functionName: 'getStoredNumber',
+    functionName: 'getStoredNumberByUser',
+    args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!contractAddress,
     }
@@ -39,6 +40,7 @@ export const useNumberStorage = () => {
     address: contractAddress,
     abi: NumberStorageABI,
     functionName: 'getCalculationResult',
+    args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!contractAddress,
     }

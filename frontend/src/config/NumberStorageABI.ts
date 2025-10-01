@@ -24,7 +24,7 @@ const abi =
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -55,7 +55,7 @@ const abi =
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -73,7 +73,7 @@ const abi =
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -91,7 +91,7 @@ const abi =
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -109,7 +109,7 @@ const abi =
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -127,7 +127,7 @@ const abi =
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -143,4 +143,3 @@ const abi =
 ];
 
 export default abi as const;
-

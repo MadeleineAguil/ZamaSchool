@@ -86,7 +86,7 @@ const abi =
       {
         "internalType": "externalEaddress",
         "name": "inputAddress",
-        "type": "bytes"
+        "type": "bytes32"
       },
       {
         "internalType": "bytes",
@@ -109,4 +109,3 @@ const abi =
 ];
 
 export default abi as const;
-
