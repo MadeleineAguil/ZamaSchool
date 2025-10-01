@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**An Interactive Educational Platform for Learning Fully Homomorphic Encryption (FHE) Technology**
+**An Interactive Educational Platform for Learning Zama Fully Homomorphic Encryption (FHE) Technology**
 
 [![License: BSD-3-Clause-Clear](https://img.shields.io/badge/License-BSD--3--Clause--Clear-blue.svg)](https://opensource.org/licenses/BSD-3-Clause-Clear)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/)
