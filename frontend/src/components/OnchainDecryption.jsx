@@ -119,22 +119,22 @@ const OnchainDecryption = () => {
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('onchain.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 请求异步解密
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Request asynchronous decryption
 function requestDecryptNumber() external returns (uint256) {
     require(FHE.isInitialized(userEncryptedNumbers[msg.sender]), "No encrypted number stored");
     require(!isDecryptionPending[msg.sender], "Decryption already pending");
 
-    // 准备要解密的密文数组
+    // Prepare ciphertexts to decrypt
     bytes32[] memory cts = new bytes32[](1);
     cts[0] = FHE.toBytes32(userEncryptedNumbers[msg.sender]);
 
-    // 请求异步解密
+    // Request async decryption
     uint256 requestId = FHE.requestDecryption(
         cts,
         this.callbackDecryptNumber.selector
     );
 
-    // 更新状态
+    // Update state
     isDecryptionPending[msg.sender] = true;
     latestRequestIds[msg.sender] = requestId;
     requestIds[requestId] = msg.sender;
@@ -143,23 +143,23 @@ function requestDecryptNumber() external returns (uint256) {
     return requestId;
 }
 
-// 解密回调函数
+// Decryption callback
 function callbackDecryptNumber(
     uint256 requestId,
     bytes memory cleartexts,
     bytes memory decryptionProof
 ) public returns (bool) {
-    // 验证请求ID
+    // Verify request ID
     address user = requestIds[requestId];
     require(user != address(0), "Invalid request ID");
 
-    // 验证解密证明
+    // Verify decryption proof
     FHE.checkSignatures(requestId, cleartexts, decryptionProof);
 
-    // 解码解密结果
+    // Decode decrypted result
     uint32 decryptedValue = abi.decode(cleartexts, (uint32));
 
-    // 存储解密结果
+    // Store decrypted result
     decryptedNumbers[user] = decryptedValue;
     isDecryptionPending[user] = false;
 
@@ -170,22 +170,22 @@ function callbackDecryptNumber(
 
           <h5>📝 {t('onchain.frontend_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 1. 存储加密数字
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 1) Store encrypted number
 const input = instance.createEncryptedInput(contractAddress, userAddress)
 input.add32(number)
 const encryptedInput = await input.encrypt()
 await contract.storeEncryptedNumber(encryptedInput.handles[0])
 
-// 2. 请求链上解密
+// 2) Request onchain decryption
 const tx = await contract.requestDecryptNumber()
 await tx.wait()
 
-// 3. 监听解密状态
+// 3) Watch decryption status
 const decryptionStatus = await contract.getDecryptionStatus(userAddress)
 // decryptionStatus: [pending, requestId, decryptedNumber]
 
-// 4. 等待解密完成
-// 解密由KMS异步完成，通过回调函数更新结果`}</pre>
+// 4) Await completion
+// Decryption is done asynchronously by KMS via callback`}</pre>
           </div>
         </div>
       </div>

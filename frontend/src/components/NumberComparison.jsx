@@ -4,7 +4,7 @@ import { useAccount, useWalletClient } from 'wagmi'
 import { useNumberStorage } from '../hooks/useContracts'
 import { Contract } from 'ethers'
 import { useEthersSigner } from '../hooks/useEthersSigner'
-import NumberStorageABI from '../config/NumberStorageABI.json'
+import NumberStorageABI from '../config/NumberStorageABI'
 import { useI18n } from '../contexts/I18nContext'
 
 const NumberComparison = () => {
@@ -224,42 +224,42 @@ const NumberComparison = () => {
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('cmp.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 加密数字比较示例
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Encrypted number comparison example
 function compareStoredNumberEqual(externalEuint32 inputNumber, bytes calldata inputProof) external {
     euint32 numberToCompare = FHE.fromExternal(inputNumber, inputProof);
-    ebool result = FHE.eq(userNumbers[msg.sender], numberToCompare);  // 相等比较
+    ebool result = FHE.eq(userNumbers[msg.sender], numberToCompare);  // equality
 
     comparisonResults[msg.sender] = result;
     FHE.allowThis(comparisonResults[msg.sender]);
     FHE.allow(comparisonResults[msg.sender], msg.sender);
 }
 
-// 其他比较运算符
-FHE.gt(a, b)  // 大于
-FHE.lt(a, b)  // 小于
-FHE.ge(a, b)  // 大于等于
-FHE.le(a, b)  // 小于等于
-FHE.ne(a, b)  // 不等于`}</pre>
+// Other comparison operators
+FHE.gt(a, b)  // greater than
+FHE.lt(a, b)  // less than
+FHE.ge(a, b)  // greater or equal
+FHE.le(a, b)  // less or equal
+FHE.ne(a, b)  // not equal`}</pre>
           </div>
 
           <h5>📝 {t('cmp.frontend_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 前端加密比较流程
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Frontend encrypted comparison flow
 const compareNumbers = async (compareValue, comparisonType) => {
-  // 1. 创建加密输入
+  // 1) Create encrypted input
   const input = instance.createEncryptedInput(contractAddress, userAddress)
   input.add32(parseInt(compareValue))
   const encryptedInput = await input.encrypt()
 
-  // 2. 调用合约比较方法
+  // 2) Call contract compare method
   const result = await contract.compareStoredNumberEqual(
     encryptedInput.handles[0],
     encryptedInput.inputProof
   )
 
-  // 3. 解密布尔结果
+  // 3) Decrypt boolean result
   const comparisonResult = await userDecrypt(resultHandle)
-  console.log('比较结果:', comparisonResult) // true/false
+  console.log('comparison result:', comparisonResult) // true/false
 }`}</pre>
           </div>
         </div>

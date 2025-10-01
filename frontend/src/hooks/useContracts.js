@@ -3,9 +3,9 @@ import { useAccount, useReadContract } from 'wagmi'
 import { Contract } from 'ethers'
 import { useEthersSigner } from './useEthersSigner'
 import { getContractAddress } from '../config/contracts'
-import NumberStorageABI from '../config/NumberStorageABI.json'
-import AddressStorageABI from '../config/AddressStorageABI.json'
-import OnchainDecryptionABI from '../config/OnchainDecryptionABI.json'
+import NumberStorageABI from '../config/NumberStorageABI'
+import AddressStorageABI from '../config/AddressStorageABI'
+import OnchainDecryptionABI from '../config/OnchainDecryptionABI'
 
 export const useNumberStorage = () => {
   const { address, chainId } = useAccount()

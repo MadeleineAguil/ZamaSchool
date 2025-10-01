@@ -180,9 +180,9 @@ const FHECalculations = () => {
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('fhe_calc.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// NumberStorage.sol - FHE运算函数
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// NumberStorage.sol - FHE operations
 
-// 加法运算：密文 + 密文
+// Addition: ciphertext + ciphertext
 function addToStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
     require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
 
@@ -196,7 +196,7 @@ function addToStoredNumber(externalEuint32 inputNumber, bytes calldata inputProo
     emit CalculationPerformed(msg.sender, "addition");
 }
 
-// 减法运算：密文 - 密文
+// Subtraction: ciphertext - ciphertext
 function subtractFromStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
     require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
 
@@ -210,7 +210,7 @@ function subtractFromStoredNumber(externalEuint32 inputNumber, bytes calldata in
     emit CalculationPerformed(msg.sender, "subtraction");
 }
 
-// 乘法运算：密文 × 密文
+// Multiplication: ciphertext × ciphertext
 function multiplyStoredNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
     require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
 
@@ -224,7 +224,7 @@ function multiplyStoredNumber(externalEuint32 inputNumber, bytes calldata inputP
     emit CalculationPerformed(msg.sender, "multiplication");
 }
 
-// 除法运算：密文 ÷ 明文（除数必须是明文）
+// Division: ciphertext ÷ plaintext (divisor must be plaintext)
 function divideStoredNumber(uint32 divisor) external {
     require(FHE.isInitialized(userNumbers[msg.sender]), "No stored number");
     require(divisor > 0, "Divisor must be greater than 0");
@@ -238,7 +238,7 @@ function divideStoredNumber(uint32 divisor) external {
     emit CalculationPerformed(msg.sender, "division");
 }
 
-// 两个用户数字相加（演示多用户交互）
+// Add two users' numbers (multi-user demo)
 function addTwoStoredNumbers(address userA, address userB) external {
     require(FHE.isInitialized(userNumbers[userA]), "UserA has no stored number");
     require(FHE.isInitialized(userNumbers[userB]), "UserB has no stored number");
@@ -255,14 +255,14 @@ function addTwoStoredNumbers(address userA, address userB) external {
 
           <h5>📝 {t('fhe_calc.frontend_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// FHE计算操作的前端实现
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Frontend implementation for FHE calculations
 
-// 加密运算数（除法除外）
+// Encrypt operand (except division)
 const performFHECalculation = async (operation, operand) => {
   let encryptedData = null;
 
   if (operation !== 'divide') {
-    // 创建加密输入
+    // Create encrypted input
     const input = instance.createEncryptedInput(contractAddress, userAddress)
     input.add32(parseInt(operand))
     const encryptedInput = await input.encrypt()
@@ -273,7 +273,7 @@ const performFHECalculation = async (operation, operand) => {
     }
   }
 
-  // 调用对应的合约函数
+  // Call corresponding contract function
   switch (operation) {
     case 'add':
       await contract.addToStoredNumber(
@@ -297,23 +297,23 @@ const performFHECalculation = async (operation, operand) => {
       break
 
     case 'divide':
-      // 除法运算：除数为明文，不需要加密
+      // Division: plaintext divisor, no encryption required
       await contract.divideStoredNumber(parseInt(operand))
       break
   }
 }
 
-// 获取计算结果
+// Get calculation result
 const getCalculationResult = async () => {
   return await contract.getCalculationResult()
 }
 
-// 支持的FHE运算类型
+// Supported FHE operation types
 const fheOperations = {
-  arithmetic: ['add', 'sub', 'mul', 'div', 'rem'],  // 算术运算
-  comparison: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'], // 比较运算
-  bitwise: ['and', 'or', 'xor', 'not'],             // 位运算
-  special: ['min', 'max', 'select']                 // 特殊运算
+  arithmetic: ['add', 'sub', 'mul', 'div', 'rem'],  // arithmetic
+  comparison: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'], // comparison
+  bitwise: ['and', 'or', 'xor', 'not'],             // bitwise
+  special: ['min', 'max', 'select']                 // special
 }`}</pre>
           </div>
         </div>
