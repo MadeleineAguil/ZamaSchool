@@ -105,13 +105,13 @@ contract NumberStorage is SepoliaConfig {
         externalEuint32 inputNumber,
         bytes calldata inputProof
     ) external {
-        // 验证并转换外部加密输入
+        // Verify and convert external encrypted input
         euint32 encryptedNumber = FHE.fromExternal(inputNumber, inputProof);
 
-        // 存储到用户映射
+        // Store in user mapping
         userNumbers[msg.sender] = encryptedNumber;
 
-        // 设置访问控制权限
+        // Set access control permissions
         FHE.allowThis(userNumbers[msg.sender]);
         FHE.allow(userNumbers[msg.sender], msg.sender);
 
@@ -126,19 +126,19 @@ contract NumberStorage is SepoliaConfig {
 
           <h5>📝 {t('common.frontend_encrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 前端加密和存储
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Frontend encryption and storage
 const encryptAndStore = async () => {
-  // 1. 创建加密输入
+  // 1. Create encrypted input
   const input = instance.createEncryptedInput(contractAddress, userAddress)
-  input.add32(parseInt(numberValue))  // 添加32位数字
+  input.add32(parseInt(numberValue))  // Add a 32-bit number
 
-  // 2. 执行加密
+  // 2. Perform encryption
   const encryptedInput = await input.encrypt()
 
-  // 3. 调用合约存储
+  // 3. Call contract to store
   await contract.storeNumber(
-    encryptedInput.handles[0],    // 加密数据句柄
-    encryptedInput.inputProof     // 输入证明
+    encryptedInput.handles[0],    // Encrypted data handle
+    encryptedInput.inputProof     // Input proof
   )
 }`}</pre>
           </div>

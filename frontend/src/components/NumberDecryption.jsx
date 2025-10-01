@@ -131,12 +131,12 @@ const NumberDecryption = () => {
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('number_decrypt.contract_read_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 从合约读取加密数据
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Read encrypted data from contract
 function getStoredNumber() external view returns (euint32) {
     return userNumbers[msg.sender];
 }
 
-// 获取其他用户的加密数据（需要权限）
+// Get another user's encrypted data (requires permission)
 function getStoredNumberByUser(address user) external view returns (euint32) {
     return userNumbers[user];
 }`}</pre>
@@ -144,18 +144,18 @@ function getStoredNumberByUser(address user) external view returns (euint32) {
 
           <h5>📝 {t('number_decrypt.frontend_decrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 用户解密流程
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// User decryption flow
 const decryptData = async (ciphertextHandle) => {
-  // 1. 生成临时密钥对
+  // 1. Generate a temporary keypair
   const keypair = instance.generateKeypair()
 
-  // 2. 准备解密请求
+  // 2. Prepare decryption request
   const handleContractPairs = [{
     handle: ciphertextHandle,
     contractAddress: CONTRACT_ADDRESS
   }]
 
-  // 3. 创建EIP712签名数据
+  // 3. Create EIP712 typed data
   const eip712 = instance.createEIP712(
     keypair.publicKey,
     [CONTRACT_ADDRESS],
@@ -163,7 +163,7 @@ const decryptData = async (ciphertextHandle) => {
     duration
   )
 
-  // 4. 用户签名授权
+  // 4. User signature
   const signature = await walletClient.signTypedData({
     domain: eip712.domain,
     types: { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
@@ -171,7 +171,7 @@ const decryptData = async (ciphertextHandle) => {
     message: eip712.message
   })
 
-  // 5. 执行解密
+  // 5. Execute decryption
   const result = await instance.userDecrypt(
     handleContractPairs,
     keypair.privateKey,

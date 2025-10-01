@@ -135,45 +135,45 @@ const AddressDecryption = () => {
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('address_decrypt.contract_read_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 获取加密地址的合约函数
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Contract functions to get encrypted addresses
 function getStoredAddress() external view returns (eaddress) {
     return userAddresses[msg.sender];
 }
 
-// 获取其他用户的加密地址（需要权限）
+// Get another user's encrypted address (requires permission)
 function getStoredAddressByUser(address user) external view returns (eaddress) {
     return userAddresses[user];
 }
 
-// 比较两个加密地址（返回比较结果）
+// Compare two encrypted addresses (return comparison result)
 function compareAddresses(address userA, address userB)
     external view returns (eaddress) {
     require(FHE.isInitialized(userAddresses[userA]), "UserA no address");
     require(FHE.isInitialized(userAddresses[userB]), "UserB no address");
 
-    // 这里可以返回比较结果或其中一个地址
+    // Here we can return a comparison result or one of the addresses
     return userAddresses[userA];
 }`}</pre>
           </div>
 
           <h5>📝 {t('address_decrypt.frontend_decrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 地址解密完整流程
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Full address decryption flow
 const decryptAddress = async (addressHandle) => {
-  // 1. 生成解密密钥对
+  // 1. Generate a keypair for decryption
   const keypair = instance.generateKeypair()
 
-  // 2. 准备解密请求
+  // 2. Prepare decryption request
   const handleContractPairs = [{
     handle: addressHandle,
     contractAddress: CONTRACT_ADDRESS
   }]
 
-  // 3. 创建时间戳和有效期
+  // 3. Create timestamp and validity period
   const startTimeStamp = Math.floor(Date.now() / 1000).toString()
   const durationDays = "10"
 
-  // 4. 创建EIP712签名数据
+  // 4. Create EIP712 typed data
   const eip712 = instance.createEIP712(
     keypair.publicKey,
     [CONTRACT_ADDRESS],
@@ -181,7 +181,7 @@ const decryptAddress = async (addressHandle) => {
     durationDays
   )
 
-  // 5. 用户签名
+  // 5. User signature
   const signature = await walletClient.signTypedData({
     domain: eip712.domain,
     types: { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
@@ -189,7 +189,7 @@ const decryptAddress = async (addressHandle) => {
     message: eip712.message
   })
 
-  // 6. 执行解密
+  // 6. Execute decryption
   const result = await instance.userDecrypt(
     handleContractPairs,
     keypair.privateKey,
@@ -201,11 +201,11 @@ const decryptAddress = async (addressHandle) => {
     durationDays
   )
 
-  // 7. 返回解密后的地址
+  // 7. Return decrypted address
   return result[addressHandle]
 }
 
-// 验证地址格式
+// Validate address format
 const isValidAddress = (addr) => {
   return /^0x[a-fA-F0-9]{40}$/.test(addr)
 }`}</pre>

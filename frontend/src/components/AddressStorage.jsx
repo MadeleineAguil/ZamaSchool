@@ -127,7 +127,7 @@ contract AddressStorage is SepoliaConfig {
 
     event AddressStored(address indexed user);
 
-    // 存储用户提供的加密地址
+    // Store user-provided encrypted address
     function storeAddress(
         externalEaddress inputAddress,
         bytes calldata inputProof
@@ -142,9 +142,9 @@ contract AddressStorage is SepoliaConfig {
         emit AddressStored(msg.sender);
     }
 
-    // 生成并存储随机地址
+    // Generate and store a random address
     function storeRandomAddress() external {
-        // 生成随机地址
+        // Generate a random address
         address randomAddr = address(uint160(uint256(
             keccak256(abi.encodePacked(
                 block.timestamp,
@@ -170,25 +170,25 @@ contract AddressStorage is SepoliaConfig {
 
           <h5>📝 {t('address_storage.frontend_encrypt_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 加密地址的两种方式
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Two ways to handle encrypted addresses
 
-// 方式1: 加密用户输入的地址
+// Method 1: Encrypt a user-provided address
 const encryptUserAddress = async (address) => {
   const input = instance.createEncryptedInput(contractAddress, userAddress)
-  input.addAddress(address)  // 添加地址类型数据
+  input.addAddress(address)  // Add address type data
 
   const encryptedInput = await input.encrypt()
 
-  // 调用合约存储
+  // Call contract to store
   await contract.storeAddress(
     encryptedInput.handles[0],
     encryptedInput.inputProof
   )
 }
 
-// 方式2: 使用合约生成随机地址
+// Method 2: Use contract to generate a random address
 const storeRandomAddress = async () => {
-  // 直接调用合约函数，无需前端加密
+  // Directly call the contract; no frontend encryption needed
   await contract.storeRandomAddress()
 }`}</pre>
           </div>
