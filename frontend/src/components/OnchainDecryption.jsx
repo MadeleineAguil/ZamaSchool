@@ -122,7 +122,19 @@ const OnchainDecryption = () => {
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('onchain.contract_code')}</h5>
           <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px', marginBottom: '10px' }}>
-            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Request asynchronous decryption
+            <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// Store external ciphertext -> internal encrypted value
+function storeEncryptedNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
+    euint32 encryptedNumber = FHE.fromExternal(inputNumber, inputProof);
+
+    userEncryptedNumbers[msg.sender] = encryptedNumber;
+
+    FHE.allowThis(userEncryptedNumbers[msg.sender]);
+    FHE.allow(userEncryptedNumbers[msg.sender], msg.sender);
+
+    emit NumberStored(msg.sender);
+}
+
+// Request asynchronous decryption
 function requestDecryptNumber() external returns (uint256) {
     require(FHE.isInitialized(userEncryptedNumbers[msg.sender]), "No encrypted number stored");
     require(!isDecryptionPending[msg.sender], "Decryption already pending");
@@ -177,7 +189,10 @@ function callbackDecryptNumber(
 const input = instance.createEncryptedInput(contractAddress, userAddress)
 input.add32(number)
 const encryptedInput = await input.encrypt()
-await contract.storeEncryptedNumber(encryptedInput.handles[0])
+await contract.storeEncryptedNumber(
+  encryptedInput.handles[0],
+  encryptedInput.inputProof
+)
 
 // 2) Request onchain decryption
 const tx = await contract.requestDecryptNumber()
