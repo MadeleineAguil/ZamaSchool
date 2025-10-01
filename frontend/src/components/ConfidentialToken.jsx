@@ -14,7 +14,10 @@ const ConfidentialToken = () => {
   const signer = useEthersSigner({ chainId })
   const { t } = useI18n()
 
+  const [encBalanceHandle, setEncBalanceHandle] = useState('')
   const [decBalance, setDecBalance] = useState(null)
+  const [decBalanceHuman, setDecBalanceHuman] = useState('')
+  const [tokenDecimals, setTokenDecimals] = useState(6)
   const [tokenAddress, setTokenAddress] = useState('')
   const [transferTo, setTransferTo] = useState('')
   const [transferAmt, setTransferAmt] = useState('')
@@ -46,16 +49,32 @@ const ConfidentialToken = () => {
     } finally { setLoading(false) }
   }
 
-  const handleViewAndDecryptBalance = async () => {
+  const fetchEncryptedBalance = async (userAddr) => {
+    const s = await signer
+    const contract = new Contract(CONTRACT_ADDRESS, ConfidentialUSDTABI, s)
+    return await contract.confidentialBalanceOf(userAddr)
+  }
+
+  const handleFetchEncryptedBalance = async () => {
     if (!ensureReady()) return
-    if (!walletClient) { alert(t('common.connect_wallet')); return }
     setLoading(true)
     try {
-      const s = await signer
-      const contract = new Contract(CONTRACT_ADDRESS, ConfidentialUSDTABI, s)
-      const encBal = await contract.balanceOf(address)
-      const handle = encBal.toString()
+      const encBal = await fetchEncryptedBalance(address)
+      const handle = encBal?.toString?.() || String(encBal)
+      setEncBalanceHandle(handle)
+    } catch (e) {
+      console.error(e)
+      alert(t('ctoken.fetch_enc_failed') + ' ' + (e?.message || e))
+    } finally { setLoading(false) }
+  }
 
+  const handleDecryptBalance = async () => {
+    if (!ensureReady()) return
+    if (!walletClient) { alert(t('common.connect_wallet')); return }
+    if (!encBalanceHandle) { alert(t('ctoken.no_enc_balance')); return }
+    setLoading(true)
+    try {
+      const handle = encBalanceHandle
       const keypair = instance.generateKeypair()
       const handleContractPairs = [{ handle, contractAddress: CONTRACT_ADDRESS }]
       const startTimeStamp = Math.floor(Date.now() / 1000).toString()
@@ -81,11 +100,26 @@ const ConfidentialToken = () => {
         durationDays,
       )
       const dec = res[handle]
-      setDecBalance((dec !== undefined && dec !== null) ? dec.toString() : '')
+      const decStr = (dec !== undefined && dec !== null) ? dec.toString() : ''
+      setDecBalance(decStr)
+      if (decStr) {
+        const bi = BigInt(decStr)
+        const human = (Number(bi) / Math.pow(10, tokenDecimals)).toString()
+        setDecBalanceHuman(human)
+      } else {
+        setDecBalanceHuman('')
+      }
     } catch (e) {
       console.error(e)
       alert(t('ctoken.decrypt_failed') + ' ' + (e?.message || e))
     } finally { setLoading(false) }
+  }
+
+  const humanToAtomic = (valueStr, decimals) => {
+    const [intPart, fracRaw=''] = String(valueStr).trim().split('.')
+    const frac = (fracRaw + '0'.repeat(decimals)).slice(0, decimals)
+    const joined = (intPart || '0') + frac
+    return BigInt(joined)
   }
 
   const handleTransfer = async () => {
@@ -93,8 +127,9 @@ const ConfidentialToken = () => {
     if (!transferTo || !transferAmt) { alert(t('ctoken.need_to_and_amount')); return }
     setLoading(true)
     try {
+      const atomic = humanToAtomic(transferAmt, tokenDecimals)
       const input = instance.createEncryptedInput(CONTRACT_ADDRESS, address)
-      input.add64(parseInt(transferAmt))
+      input.add64(Number(atomic.toString()))
       const encryptedInput = await input.encrypt()
 
       const s = await signer
@@ -102,11 +137,7 @@ const ConfidentialToken = () => {
 
       let tx
       // try transferEncrypted first, else fallback to transfer
-      try {
-        tx = await contract.transferEncrypted(encryptedInput.handles[0], encryptedInput.inputProof, transferTo)
-      } catch (_) {
-        tx = await contract.transfer(encryptedInput.handles[0], encryptedInput.inputProof, transferTo)
-      }
+      tx = await contract.confidentialTransfer(transferTo, encryptedInput.handles[0], encryptedInput.inputProof)
       await tx.wait()
       setTxHash(tx.hash)
       alert(t('ctoken.transfer_ok'))
@@ -126,6 +157,19 @@ const ConfidentialToken = () => {
         </div>
       </div>
     )
+  }
+
+  // Load decimals once after ready
+  if (isInitialized && address && CONTRACT_ADDRESS && tokenDecimals === 6) {
+    (async () => {
+      try {
+        const s = await signer
+        const c = new Contract(CONTRACT_ADDRESS, ConfidentialUSDTABI, s)
+        const d = await c.decimals()
+        if (typeof d === 'number') setTokenDecimals(d)
+        else if (d?.toNumber) setTokenDecimals(d.toNumber())
+      } catch {}
+    })()
   }
 
   return (
@@ -149,17 +193,27 @@ const ConfidentialToken = () => {
         <p style={{ fontSize: '12px', color: '#666' }}>{t('ctoken.addr_hint')}</p>
       </div> */}
 
-      <div style={{ display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr', marginBottom: '20px' }}>
+      <div style={{ display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr', marginBottom: '12px' }}>
         <button onClick={handleFaucet} disabled={loading} style={{ padding: '10px 16px', background: '#2196F3', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.call_faucet')}</button>
-        <button onClick={handleViewAndDecryptBalance} disabled={loading} style={{ padding: '10px 16px', background: '#4CAF50', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.view_decrypt_balance')}</button>
+        <button onClick={handleFetchEncryptedBalance} disabled={loading} style={{ padding: '10px 16px', background: '#607D8B', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.fetch_enc_balance')}</button>
       </div>
+
+      {encBalanceHandle && (
+        <div style={{ marginBottom: '16px', background: '#f0f8ff', padding: '12px', borderRadius: '8px' }}>
+          <div><strong>{t('ctoken.enc_balance_handle')}:</strong></div>
+          <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>{encBalanceHandle}</code>
+          <div style={{ marginTop: '10px' }}>
+            <button onClick={handleDecryptBalance} disabled={loading} style={{ padding: '8px 12px', background: '#4CAF50', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.decrypt_balance')}</button>
+          </div>
+        </div>
+      )}
 
       <div style={{ marginBottom: '12px' }}>
         <h4>{t('ctoken.transfer_title')}</h4>
         <label style={{ display: 'block', fontWeight: 'bold' }}>{t('ctoken.to_addr')}</label>
         <input type="text" value={transferTo} onChange={(e)=>setTransferTo(e.target.value)} placeholder="0x..." style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '6px', marginBottom: '8px' }} />
-        <label style={{ display: 'block', fontWeight: 'bold' }}>{t('ctoken.amount')}</label>
-        <input type="number" value={transferAmt} onChange={(e)=>setTransferAmt(e.target.value)} placeholder="1000000 (6 decimals)" style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '6px' }} />
+        <label style={{ display: 'block', fontWeight: 'bold' }}>{t('ctoken.amount_human')}</label>
+        <input type="text" value={transferAmt} onChange={(e)=>setTransferAmt(e.target.value)} placeholder={t('ctoken.human_decimals')} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '6px' }} />
         <div style={{ marginTop: '10px' }}>
           <button onClick={handleTransfer} disabled={loading || !transferTo || !transferAmt} style={{ padding: '10px 16px', background: '#9C27B0', color: '#fff', border: 0, borderRadius: '6px', cursor: 'pointer' }}>{t('ctoken.transfer_btn')}</button>
         </div>
@@ -169,7 +223,10 @@ const ConfidentialToken = () => {
         <div style={{ background: '#f0f8ff', padding: '12px', borderRadius: '8px' }}>
           {txHash && (<p><strong>{t('common.tx_hash')}:</strong> {txHash}</p>)}
           {decBalance !== null && (
-            <p><strong>{t('ctoken.decrypted_balance')}:</strong> {decBalance}</p>
+            <>
+              <p><strong>{t('ctoken.decrypted_balance')}:</strong> {decBalance}</p>
+              <p><strong>{t('ctoken.decrypted_balance_human')}:</strong> {decBalanceHuman}</p>
+            </>
           )}
         </div>
       )}
@@ -195,4 +252,3 @@ await contract.transferEncrypted(encrypted.handles[0], encrypted.inputProof, to)
 }
 
 export default ConfidentialToken
-
