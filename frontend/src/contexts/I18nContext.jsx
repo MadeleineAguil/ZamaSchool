@@ -199,7 +199,7 @@ const translations = {
     'number_storage.input_proof_desc': 'Proof of validity for the encrypted input'
   },
   zh: {
-    'app.title': 'FHE 学习平台',
+    'app.title': 'Zama 学习平台',
     'app.subtitle': '学习 Zama 的全同态加密技术，体验隐私保护的区块链计算',
     'sidebar.title': 'ZamaSchool',
     'sidebar.subtitle': '点击章节开始学习',
