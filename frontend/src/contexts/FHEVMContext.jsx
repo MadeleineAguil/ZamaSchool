@@ -11,44 +11,44 @@ export const FHEVMProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false)
   const { address } = useAccount()
 
-  // 添加调试用的useEffect
+  // Debug: log state changes
   useEffect(() => {
-    console.log('FHEVMContext状态变化 - isInitialized:', isInitialized, 'instance:', !!instance)
+    console.log('FHEVMContext state change - isInitialized:', isInitialized, 'instance:', !!instance)
   }, [isInitialized, instance])
 
   const initFHEVM = async () => {
-    console.log('initFHEVM 被调用, address:', address, 'window.ethereum:', !!window.ethereum)
+    console.log('initFHEVM called, address:', address, 'window.ethereum:', !!window.ethereum)
 
     if (!address || !window.ethereum) {
-      const errorMsg = '请先连接钱包'
-      console.log('初始化失败:', errorMsg)
+      const errorMsg = 'Please connect your wallet first'
+      console.log('Initialization failed:', errorMsg)
       setError(errorMsg)
       return false
     }
 
     try {
-      console.log('开始初始化...')
+      console.log('Starting initialization...')
       setIsLoading(true)
       setError(null)
 
-      // 初始化SDK
-      console.log('正在调用 initSDK()...')
+      // Initialize SDK
+      console.log('Calling initSDK()...')
       await initSDK()
-      console.log('initSDK() 完成')
+      console.log('initSDK() completed')
 
-      // 创建FHEVM实例
+      // Create FHEVM instance
       const config = {
         ...SepoliaConfig,
         network: window.ethereum
       }
-      console.log('创建实例，config:', config)
+      console.log('Creating instance with config:', config)
 
       const fhevmInstance = await createInstance(config)
-      console.log('实例创建成功:', !!fhevmInstance)
+      console.log('Instance created:', !!fhevmInstance)
 
       setInstance(fhevmInstance)
       setIsInitialized(true)
-      console.log('Context状态已更新: instance和isInitialized设置为true')
+      console.log('Context updated: instance set and isInitialized = true')
       return true
     } catch (err) {
       console.error('Failed to initialize FHEVM:', err)
@@ -56,7 +56,7 @@ export const FHEVMProvider = ({ children }) => {
       return false
     } finally {
       setIsLoading(false)
-      console.log('加载状态已设置为false')
+      console.log('Loading state set to false')
     }
   }
 

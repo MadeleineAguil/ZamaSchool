@@ -1,2 +1,2 @@
-// 这个文件现在只是重新导出Context中的hook
+// This file re-exports the hook from context
 export { useFHEVM } from '../contexts/FHEVMContext'

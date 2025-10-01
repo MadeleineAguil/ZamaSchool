@@ -12,11 +12,11 @@ export const useNumberStorage = () => {
   const contractAddress = getContractAddress('NumberStorage', chainId)
   const signer = useEthersSigner({ chainId })
 
-  // 状态管理
+  // State management
   const [isWriting, setIsWriting] = useState(false)
   const [writeData, setWriteData] = useState(null)
 
-  // 获取存储的数字
+  // Read stored number
   const {
     data: storedNumber,
     isError: getStoredError,
@@ -30,7 +30,7 @@ export const useNumberStorage = () => {
     }
   })
 
-  // 获取计算结果
+  // Read calculation result
   const {
     data: calculationResult,
     isError: getResultError,
@@ -44,7 +44,7 @@ export const useNumberStorage = () => {
     }
   })
 
-  // 存储数字
+  // Store number
   const storeNumber = async (params) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -65,7 +65,7 @@ export const useNumberStorage = () => {
     }
   }
 
-  // 加法运算
+  // Addition operation
   const addToStoredNumber = async (params) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -85,7 +85,7 @@ export const useNumberStorage = () => {
     }
   }
 
-  // 减法运算
+  // Subtraction operation
   const subtractFromStoredNumber = async (params) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -105,7 +105,7 @@ export const useNumberStorage = () => {
     }
   }
 
-  // 乘法运算
+  // Multiplication operation
   const multiplyStoredNumber = async (params) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -125,7 +125,7 @@ export const useNumberStorage = () => {
     }
   }
 
-  // 除法运算
+  // Division operation
   const divideStoredNumber = async (params) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -145,7 +145,7 @@ export const useNumberStorage = () => {
     }
   }
 
-  // 通用写合约方法
+  // Generic write contract method
   const writeContract = async ({ functionName, args = [] }) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -166,23 +166,23 @@ export const useNumberStorage = () => {
 
   return {
     contractAddress,
-    // 存储相关
+    // Storage
     storeNumber,
     storedNumber,
     isGettingStored,
     getStoredError,
-    // 计算相关
+    // Calculation
     calculationResult,
     isGettingResult,
     getResultError,
-    // 运算函数
+    // Operation functions
     addToStoredNumber,
     subtractFromStoredNumber,
     multiplyStoredNumber,
     divideStoredNumber,
-    // 通用写合约方法
+    // Generic write method
     writeContract,
-    // 写合约状态
+    // Write status
     isWriting,
     writeData
   }
@@ -193,11 +193,11 @@ export const useAddressStorage = () => {
   const contractAddress = getContractAddress('AddressStorage', chainId)
   const signer = useEthersSigner({ chainId })
 
-  // 状态管理
+  // State management
   const [isWriting, setIsWriting] = useState(false)
   const [writeData, setWriteData] = useState(null)
 
-  // 获取存储的地址
+  // Read stored address
   const {
     data: storedAddress,
     isError: getStoredError,
@@ -211,7 +211,7 @@ export const useAddressStorage = () => {
     }
   })
 
-  // 存储地址
+  // Store address
   const storeAddress = async (params) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -231,7 +231,7 @@ export const useAddressStorage = () => {
     }
   }
 
-  // 存储随机地址
+  // Store random address
   const storeRandomAddress = async () => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -252,14 +252,14 @@ export const useAddressStorage = () => {
 
   return {
     contractAddress,
-    // 存储相关
+    // Storage
     storeAddress,
     storeRandomAddress,
-    // 获取相关
+    // Read-related
     storedAddress,
     isGettingStored,
     getStoredError,
-    // 写合约状态
+    // Write status
     isWriting,
     writeData
   }
@@ -270,11 +270,11 @@ export const useOnchainDecryption = () => {
   const contractAddress = getContractAddress('OnchainDecryption', chainId)
   const signer = useEthersSigner({ chainId })
 
-  // 状态管理
+  // State management
   const [isWriting, setIsWriting] = useState(false)
   const [writeData, setWriteData] = useState(null)
 
-  // 获取解密状态
+  // Read decryption status
   const {
     data: decryptionStatus,
     isError: getStatusError,
@@ -289,7 +289,7 @@ export const useOnchainDecryption = () => {
     }
   })
 
-  // 存储加密数字
+  // Store encrypted number
   const storeEncryptedNumber = async (encryptedNumber) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -309,7 +309,7 @@ export const useOnchainDecryption = () => {
   }
 
 
-  // 请求解密数字
+  // Request number decryption
   const requestDecryptNumber = async () => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -329,7 +329,7 @@ export const useOnchainDecryption = () => {
   }
 
 
-  // 重置解密状态
+  // Reset decryption state
   const resetDecryptionState = async () => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
@@ -350,17 +350,17 @@ export const useOnchainDecryption = () => {
 
   return {
     contractAddress,
-    // 存储相关
+    // Storage
     storeEncryptedNumber,
-    // 解密请求相关
+    // Decryption request
     requestDecryptNumber,
-    // 状态管理
+    // State handlers
     resetDecryptionState,
     decryptionStatus,
-    // 状态
+    // Status
     isGettingStatus,
     getStatusError,
-    // 写合约状态
+    // Write status
     isWriting,
     writeData
   }
