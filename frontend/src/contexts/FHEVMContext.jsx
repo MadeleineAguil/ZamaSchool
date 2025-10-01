@@ -38,8 +38,7 @@ export const FHEVMProvider = ({ children }) => {
 
       // Create FHEVM instance
       const config = {
-        ...SepoliaConfig,
-        network: window.ethereum
+        ...SepoliaConfig
       }
       console.log('Creating instance with config:', config)
 
