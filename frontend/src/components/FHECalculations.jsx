@@ -3,12 +3,17 @@ import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
 import { getContractAddress } from '../config/contracts'
 import { useI18n } from '../contexts/I18nContext'
+import { Contract } from 'ethers'
+import { useEthersSigner } from '../hooks/useEthersSigner'
+import NumberStorageABI from '../config/NumberStorageABI'
+import { useNumberStorage } from '../hooks/useContracts'
 
 const FHECalculations = () => {
   const { instance, isInitialized } = useFHEVM()
   const { address, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
   const { t } = useI18n()
+  const signer = useEthersSigner({ chainId })
   const [operationNumber, setOperationNumber] = useState('')
   const [divisor, setDivisor] = useState('')
   const [selectedOperation, setSelectedOperation] = useState('add')
@@ -26,11 +31,20 @@ const FHECalculations = () => {
     { value: 'divide', label: t('fhe_calc.op.divide.label'), description: t('fhe_calc.op.divide.desc') }
   ]
 
+  // NumberStorage helpers
+  const {
+    addToStoredNumber,
+    subtractFromStoredNumber,
+    multiplyStoredNumber,
+    divideStoredNumber,
+    storedNumber,
+  } = useNumberStorage()
+
   const handleGetStoredNumber = async () => {
     try {
-      // Simulate fetching stored number from contract
-      setCurrentStoredNumber('42') // mock value
-      console.log('Fetched stored number')
+      if (!storedNumber) throw new Error('No stored number')
+      setCurrentStoredNumber(storedNumber.toString())
+      console.log('Fetched stored number handle')
     } catch (error) {
       console.error('Fetch failed:', error)
       alert(t('fhe_calc.fetch_failed') + ' ' + error.message)
@@ -71,37 +85,28 @@ const FHECalculations = () => {
         }
       }
 
-      // Simulate calling different contract functions
-      let functionName = ''
-      let params = []
-
-      switch (selectedOperation) {
-        case 'add':
-          functionName = 'addToStoredNumber'
-          params = [encryptedData.handle, encryptedData.inputProof]
-          break
-        case 'subtract':
-          functionName = 'subtractFromStoredNumber'
-          params = [encryptedData.handle, encryptedData.inputProof]
-          break
-        case 'multiply':
-          functionName = 'multiplyStoredNumber'
-          params = [encryptedData.handle, encryptedData.inputProof]
-          break
-        case 'divide':
-          functionName = 'divideStoredNumber'
-          params = [parseInt(divisor)]
-          break
+      // Execute on-chain calculation
+      let tx
+      if (selectedOperation === 'add') {
+        tx = await addToStoredNumber({ args: [encryptedData.handle, encryptedData.inputProof] })
+      } else if (selectedOperation === 'subtract') {
+        tx = await subtractFromStoredNumber({ args: [encryptedData.handle, encryptedData.inputProof] })
+      } else if (selectedOperation === 'multiply') {
+        tx = await multiplyStoredNumber({ args: [encryptedData.handle, encryptedData.inputProof] })
+      } else if (selectedOperation === 'divide') {
+        tx = await divideStoredNumber({ args: [parseInt(divisor)] })
       }
 
-      console.log(`Call contract: ${functionName}`, params)
+      // Fetch calculation result handle from contract
+      const signerPromise = await signer
+      const contract = new Contract(CONTRACT_ADDRESS, NumberStorageABI, signerPromise)
+      const resultHandle = await contract.getCalculationResult(address)
 
-      // Simulate transaction result
       setCalculationResult({
         operation: selectedOperation,
         operand: selectedOperation === 'divide' ? divisor : operationNumber,
-        txHash: '0xMOCK_CALC_TX_HASH...',
-        resultHandle: '0x830a61b343d2f3de67ec59cb18961fd086085c1c73ff0000000000aa36a70800'
+        txHash: tx?.hash || '',
+        resultHandle: resultHandle.toString()
       })
 
     } catch (error) {
@@ -119,33 +124,44 @@ const FHECalculations = () => {
     }
 
     try {
-      // Simulate decryption process (see NumberDecryption component for real flow)
-      console.log('Decrypt calculation result...')
+      const handle = calculationResult.resultHandle
+      const keypair = instance.generateKeypair()
 
-      // Simulate decrypted value
-      let mockResult = ''
-      const stored = parseInt(currentStoredNumber || '42')
-      const operand = parseInt(calculationResult.operand)
+      const handleContractPairs = [
+        { handle, contractAddress: CONTRACT_ADDRESS }
+      ]
 
-      switch (calculationResult.operation) {
-        case 'add':
-          mockResult = (stored + operand).toString()
-          break
-        case 'subtract':
-          mockResult = (stored - operand).toString()
-          break
-        case 'multiply':
-          mockResult = (stored * operand).toString()
-          break
-        case 'divide':
-          mockResult = Math.floor(stored / operand).toString()
-          break
-      }
+      const startTimeStamp = Math.floor(Date.now() / 1000).toString()
+      const durationDays = '10'
+      const contractAddresses = [CONTRACT_ADDRESS]
 
-      setCalculationResult(prev => ({
-        ...prev,
-        decryptedResult: mockResult
-      }))
+      const eip712 = instance.createEIP712(
+        keypair.publicKey,
+        contractAddresses,
+        startTimeStamp,
+        durationDays
+      )
+
+      const signature = await walletClient.signTypedData({
+        domain: eip712.domain,
+        types: { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
+        primaryType: 'UserDecryptRequestVerification',
+        message: eip712.message
+      })
+
+      const result = await instance.userDecrypt(
+        handleContractPairs,
+        keypair.privateKey,
+        keypair.publicKey,
+        signature.replace('0x', ''),
+        contractAddresses,
+        address,
+        startTimeStamp,
+        durationDays
+      )
+
+      const decrypted = result[handle]
+      setCalculationResult(prev => ({ ...prev, decryptedResult: decrypted }))
 
     } catch (error) {
       console.error('Decrypt failed:', error)
