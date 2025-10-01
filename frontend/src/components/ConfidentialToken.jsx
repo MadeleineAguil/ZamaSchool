@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useFHEVM } from '../hooks/useFHEVM'
 import { useAccount, useWalletClient } from 'wagmi'
 import { useEthersSigner } from '../hooks/useEthersSigner'
@@ -160,17 +160,22 @@ const ConfidentialToken = () => {
   }
 
   // Load decimals once after ready
-  if (isInitialized && address && CONTRACT_ADDRESS && tokenDecimals === 6) {
-    (async () => {
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      if (!isInitialized || !address || !CONTRACT_ADDRESS) return
       try {
         const s = await signer
         const c = new Contract(CONTRACT_ADDRESS, ConfidentialUSDTABI, s)
         const d = await c.decimals()
-        if (typeof d === 'number') setTokenDecimals(d)
-        else if (d?.toNumber) setTokenDecimals(d.toNumber())
-      } catch {}
+        const n = typeof d === 'number' ? d : (d?.toNumber ? d.toNumber() : 6)
+        if (mounted) setTokenDecimals(n)
+      } catch {
+        // keep default 6 if call fails
+      }
     })()
-  }
+    return () => { mounted = false }
+  }, [isInitialized, address, CONTRACT_ADDRESS, signer])
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', margin: '20px 0' }}>
@@ -236,16 +241,24 @@ const ConfidentialToken = () => {
         <pre style={{ background: '#f8f9fa', padding: '12px', borderRadius: '8px', fontSize: '12px', overflow: 'auto', margin: 0 }}>{`// Faucet
 await contract.faucet()
 
-// View + decrypt balance
-const enc = await contract.balanceOf(user)
+// 1) Fetch encrypted balance (ciphertext handle)
+const enc = await contract.confidentialBalanceOf(user)
 const handle = enc.toString()
-// ... createEIP712 + sign + userDecrypt ... -> result[handle]
+// ... createEIP712 + sign + instance.userDecrypt(...) ...
+// decrypted = result[handle]
 
-// Transfer encrypted amount
+// 2) Encrypted transfer with human->atomic conversion
+const decimals = await contract.decimals()
+const toAtomic = (val) => {
+  const [i,f=''] = String(val).split('.')
+  const frac = (f + '0'.repeat(decimals)).slice(0, decimals)
+  return BigInt((i||'0') + frac)
+}
+const amountAtomic = toAtomic('1.000000') // 1 token if 6 decimals
 const input = instance.createEncryptedInput(tokenAddress, user)
-input.add64(amount)
+input.add64(Number(amountAtomic.toString()))
 const encrypted = await input.encrypt()
-await contract.transferEncrypted(encrypted.handles[0], encrypted.inputProof, to)`}</pre>
+await contract.confidentialTransfer(to, encrypted.handles[0], encrypted.inputProof)`}</pre>
       </div>
     </div>
   )
