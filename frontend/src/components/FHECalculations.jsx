@@ -16,7 +16,7 @@ const FHECalculations = () => {
   const [calculationResult, setCalculationResult] = useState(null)
   const [currentStoredNumber, setCurrentStoredNumber] = useState(null)
 
-  // 合约地址
+  // Contract address
   const CONTRACT_ADDRESS = getContractAddress('NumberStorage', chainId)
 
   const operations = [
@@ -28,8 +28,8 @@ const FHECalculations = () => {
 
   const handleGetStoredNumber = async () => {
     try {
-      // 模拟从合约获取存储的数字
-      setCurrentStoredNumber('42') // 模拟值
+      // Simulate fetching stored number from contract
+      setCurrentStoredNumber('42') // mock value
       console.log('Fetched stored number')
     } catch (error) {
       console.error('Fetch failed:', error)
@@ -60,7 +60,7 @@ const FHECalculations = () => {
       let encryptedData = null
 
       if (selectedOperation !== 'divide') {
-        // 创建加密输入（除法操作不需要加密输入）
+        // Create encrypted input (division doesn't require encrypted input)
         const input = instance.createEncryptedInput(CONTRACT_ADDRESS, address)
         input.add32(parseInt(operationNumber))
         const encryptedInput = await input.encrypt()
@@ -71,7 +71,7 @@ const FHECalculations = () => {
         }
       }
 
-      // 模拟调用不同的合约函数
+      // Simulate calling different contract functions
       let functionName = ''
       let params = []
 
@@ -96,7 +96,7 @@ const FHECalculations = () => {
 
       console.log(`Call contract: ${functionName}`, params)
 
-      // 模拟交易结果
+      // Simulate transaction result
       setCalculationResult({
         operation: selectedOperation,
         operand: selectedOperation === 'divide' ? divisor : operationNumber,
@@ -119,10 +119,10 @@ const FHECalculations = () => {
     }
 
     try {
-      // 模拟解密过程（实际实现参考NumberDecryption组件）
+      // Simulate decryption process (see NumberDecryption component for real flow)
       console.log('Decrypt calculation result...')
 
-      // 模拟解密后的结果
+      // Simulate decrypted value
       let mockResult = ''
       const stored = parseInt(currentStoredNumber || '42')
       const operand = parseInt(calculationResult.operand)

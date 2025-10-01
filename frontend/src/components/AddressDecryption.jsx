@@ -13,7 +13,7 @@ const AddressDecryption = () => {
   const [decryptedAddress, setDecryptedAddress] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
 
-  // 使用AddressStorage合约钩子
+  // Use AddressStorage contract hook
   const {
     contractAddress: CONTRACT_ADDRESS,
     storedAddress,
@@ -29,10 +29,10 @@ const AddressDecryption = () => {
 
     setIsDecrypting(true)
     try {
-      // 生成密钥对
+      // Generate keypair
       const keypair = instance.generateKeypair()
 
-      // 准备用户解密请求
+      // Prepare user decryption request
       const handleContractPairs = [
         {
           handle: ciphertextHandle,
@@ -44,7 +44,7 @@ const AddressDecryption = () => {
       const durationDays = "10"
       const contractAddresses = [CONTRACT_ADDRESS]
 
-      // 创建EIP712签名数据
+      // Create EIP712 typed data
       const eip712 = instance.createEIP712(
         keypair.publicKey,
         contractAddresses,
@@ -52,7 +52,7 @@ const AddressDecryption = () => {
         durationDays
       )
 
-      // 用户签名
+      // User signature
       const signature = await walletClient.signTypedData({
         domain: eip712.domain,
         types: {
@@ -62,7 +62,7 @@ const AddressDecryption = () => {
         message: eip712.message
       })
 
-      // 执行用户解密
+      // Execute user decryption
       const result = await instance.userDecrypt(
         handleContractPairs,
         keypair.privateKey,
@@ -87,14 +87,14 @@ const AddressDecryption = () => {
   }
 
   const handleFetchFromContract = async () => {
-    // 从合约获取用户的加密地址
+    // Fetch the user's encrypted address from contract
     try {
       if (!storedAddress) {
         alert(t('address_decrypt.no_address_warning'))
         return
       }
 
-      // 将storedAddress转换为字符串句柄
+      // Convert storedAddress to string handle
       const handle = storedAddress.toString()
       setCiphertextHandle(handle)
       console.log('Fetched address handle from contract:', handle)

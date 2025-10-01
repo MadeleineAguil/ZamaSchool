@@ -9,11 +9,11 @@ const OnchainDecryption = () => {
   const { address, chainId } = useAccount()
   const { t } = useI18n()
 
-  // 状态管理
+  // State management
   const [inputNumber, setInputNumber] = useState('')
   const [isEncrypting, setIsEncrypting] = useState(false)
 
-  // 使用OnchainDecryption合约钩子
+  // Use OnchainDecryption contract hook
   const {
     contractAddress: CONTRACT_ADDRESS,
     storeEncryptedNumber,
@@ -25,12 +25,12 @@ const OnchainDecryption = () => {
     isWriting
   } = useOnchainDecryption()
 
-  // 轮询解密状态
+  // Poll decryption status
   useEffect(() => {
     let interval
     if (decryptionStatus && decryptionStatus[0] === true) { // pending = true
       interval = setInterval(() => {
-        // 状态会自动更新，因为useReadContract会持续轮询
+        // Status auto-updates since useReadContract keeps polling
       }, 2000)
     }
     return () => {
@@ -38,7 +38,7 @@ const OnchainDecryption = () => {
     }
   }, [decryptionStatus])
 
-  // 加密并存储数字
+  // Encrypt and store number
   const handleEncryptAndStore = async () => {
     if (!instance || !address || !inputNumber) {
       alert(t('onchain.decrypt_prereq'))
@@ -47,12 +47,12 @@ const OnchainDecryption = () => {
 
     setIsEncrypting(true)
     try {
-      // 创建加密输入
+      // Create encrypted input
       const input = instance.createEncryptedInput(CONTRACT_ADDRESS, address)
       input.add32(parseInt(inputNumber))
       const encryptedInput = await input.encrypt()
 
-      // 调用合约存储函数
+      // Call contract to store
       await storeEncryptedNumber(encryptedInput.handles[0])
 
       alert(t('onchain.store_success'))
@@ -64,7 +64,7 @@ const OnchainDecryption = () => {
     }
   }
 
-  // 请求链上解密
+  // Request onchain decryption
   const handleRequestDecryption = async () => {
     if (!address) {
       alert(t('common.connect_wallet'))
@@ -72,7 +72,7 @@ const OnchainDecryption = () => {
     }
 
     try {
-      // 调用合约解密请求函数
+      // Call contract request function
       await requestDecryptNumber()
       alert(t('onchain.request_submitted'))
     } catch (error) {
@@ -81,7 +81,7 @@ const OnchainDecryption = () => {
     }
   }
 
-  // 重置解密状态
+  // Reset decryption state
   const handleReset = async () => {
     try {
       await resetDecryptionState()

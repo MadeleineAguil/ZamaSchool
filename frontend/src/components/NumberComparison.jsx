@@ -22,7 +22,7 @@ const NumberComparison = () => {
   const [userBAddress, setUserBAddress] = useState('')
   const [isComparingTwoUsers, setIsComparingTwoUsers] = useState(false)
 
-  // 使用NumberStorage合约钩子
+  // Use NumberStorage contract hook
   const {
     contractAddress: CONTRACT_ADDRESS,
     writeContract,
@@ -52,12 +52,12 @@ const NumberComparison = () => {
 
     setIsComparing(true)
     try {
-      // 创建加密输入
+      // Create encrypted input
       const input = instance.createEncryptedInput(CONTRACT_ADDRESS, address)
       input.add32(parseInt(comparisonValue))
       const encryptedInput = await input.encrypt()
 
-      // 根据比较类型调用不同的合约方法
+      // Call different contract methods based on comparison type
       let functionName
       switch (comparisonType) {
         case 'equal':
@@ -79,7 +79,7 @@ const NumberComparison = () => {
           throw new Error('Invalid comparison type')
       }
 
-      // 调用合约方法
+      // Call contract method
       const result = await writeContract({
         functionName,
         args: [encryptedInput.handles[0], encryptedInput.inputProof]
@@ -129,7 +129,7 @@ const NumberComparison = () => {
 
     setIsDecryptingResult(true)
     try {
-      // 首先从合约获取比较结果
+      // First fetch comparison result from contract
       const signerPromise = await signer
       const contract = new Contract(CONTRACT_ADDRESS, NumberStorageABI, signerPromise)
       const comparisonResultHandle = await contract.getComparisonResult(address)
@@ -139,10 +139,10 @@ const NumberComparison = () => {
         return
       }
 
-      // 生成密钥对
+      // Generate keypair
       const keypair = instance.generateKeypair()
 
-      // 准备用户解密请求
+      // Prepare user decryption request
       const handleContractPairs = [
         {
           handle: comparisonResultHandle.toString(),
@@ -154,7 +154,7 @@ const NumberComparison = () => {
       const durationDays = "10"
       const contractAddresses = [CONTRACT_ADDRESS]
 
-      // 创建EIP712签名数据
+      // Create EIP712 typed data
       const eip712 = instance.createEIP712(
         keypair.publicKey,
         contractAddresses,
@@ -162,7 +162,7 @@ const NumberComparison = () => {
         durationDays
       )
 
-      // 用户签名
+      // User signature
       const signature = await walletClient.signTypedData({
         domain: eip712.domain,
         types: {
@@ -172,7 +172,7 @@ const NumberComparison = () => {
         message: eip712.message
       })
 
-      // 执行用户解密
+      // Execute user decryption
       const result = await instance.userDecrypt(
         handleContractPairs,
         keypair.privateKey,

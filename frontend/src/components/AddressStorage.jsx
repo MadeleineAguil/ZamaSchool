@@ -15,11 +15,11 @@ const AddressStorage = () => {
   const [txHash, setTxHash] = useState('')
   const [useRandomAddress, setUseRandomAddress] = useState(false)
 
-  // 合约地址
+  // Contract address
   const CONTRACT_ADDRESS = getContractAddress('AddressStorage', chainId)
 
   const generateRandomAddress = () => {
-    // 生成一个随机的以太坊地址
+    // Generate a random Ethereum address
     const randomBytes = new Uint8Array(20)
     crypto.getRandomValues(randomBytes)
     const randomAddress = '0x' + Array.from(randomBytes)
@@ -41,19 +41,19 @@ const AddressStorage = () => {
 
     setIsEncrypting(true)
     try {
-      // 创建加密输入
+      // Create encrypted input
       const input = instance.createEncryptedInput(CONTRACT_ADDRESS, address)
 
       if (useRandomAddress) {
-        // 对于随机地址，我们将在合约中生成
-        // 这里只是标记使用随机地址模式
+        // For random address, it will be generated in contract
+        // Just mark random address mode here
         setEncryptedData({
           isRandomAddress: true,
           handle: null,
           inputProof: null
         })
       } else {
-        // 加密用户输入的地址
+        // Encrypt user input address
         input.addAddress(inputAddress)
         const encryptedInput = await input.encrypt()
 
@@ -81,7 +81,7 @@ const AddressStorage = () => {
     }
 
     try {
-      // 这里将调用合约存储加密地址
+      // Call contract to store the encrypted address
       if (encryptedData.isRandomAddress) {
         console.log('Call contract storeRandomAddress...')
       } else {

@@ -13,7 +13,7 @@ const NumberDecryption = () => {
   const [decryptedValue, setDecryptedValue] = useState(null)
   const [ciphertextHandle, setCiphertextHandle] = useState('')
 
-  // 使用NumberStorage合约钩子
+  // Use NumberStorage contract hook
   const {
     contractAddress: CONTRACT_ADDRESS,
     storedNumber,
@@ -29,10 +29,10 @@ const NumberDecryption = () => {
 
     setIsDecrypting(true)
     try {
-      // 生成密钥对
+      // Generate keypair
       const keypair = instance.generateKeypair()
 
-      // 准备用户解密请求
+      // Prepare user decryption request
       const handleContractPairs = [
         {
           handle: ciphertextHandle,
@@ -44,7 +44,7 @@ const NumberDecryption = () => {
       const durationDays = "10"
       const contractAddresses = [CONTRACT_ADDRESS]
 
-      // 创建EIP712签名数据
+      // Create EIP712 typed data
       const eip712 = instance.createEIP712(
         keypair.publicKey,
         contractAddresses,
@@ -52,7 +52,7 @@ const NumberDecryption = () => {
         durationDays
       )
 
-      // 用户签名
+      // User signature
       const signature = await walletClient.signTypedData({
         domain: eip712.domain,
         types: {
@@ -62,7 +62,7 @@ const NumberDecryption = () => {
         message: eip712.message
       })
 
-      // 执行用户解密
+      // Execute user decryption
       const result = await instance.userDecrypt(
         handleContractPairs,
         keypair.privateKey,
@@ -87,14 +87,14 @@ const NumberDecryption = () => {
   }
 
   const handleFetchFromContract = async () => {
-    // 从合约获取用户的加密数字
+    // Fetch user's encrypted number from contract
     try {
       if (!storedNumber) {
         alert(t('number_decrypt.no_number_warning'))
         return
       }
 
-      // 将storedNumber转换为字符串句柄
+      // Convert storedNumber to string handle
       const handle = storedNumber.toString()
       setCiphertextHandle(handle)
       console.log('Fetched handle from contract:', handle)

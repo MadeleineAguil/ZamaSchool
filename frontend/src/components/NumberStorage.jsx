@@ -30,7 +30,7 @@ const NumberStorage = () => {
 
     setIsEncrypting(true)
     try {
-      // 创建加密输入
+      // Create encrypted input
       const input = instance.createEncryptedInput(contractAddress, address)
       input.add32(parseInt(number))
 
@@ -57,7 +57,7 @@ const NumberStorage = () => {
     }
 
     try {
-      // 调用合约存储加密数字
+      // Call contract to store encrypted number
       await storeNumber({
         args: [encryptedData.handle, encryptedData.inputProof]
       })
