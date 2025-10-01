@@ -410,7 +410,17 @@ function AppContent() {
           backgroundColor: '#f8f9fa',
           borderTop: '1px solid #dee2e6'
         }}>
-          <p style={{ margin: 0, color: '#666' }}>{t('footer.text')}</p>
+          <p style={{ margin: 0, color: '#666' }}>
+            {t('footer.text')} |{' '}
+            <a
+              href="https://github.com/MadeleineAguil/ZamaSchool"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#2196F3', textDecoration: 'none' }}
+            >
+              GitHub
+            </a>
+          </p>
         </footer>
       </div>
     )
