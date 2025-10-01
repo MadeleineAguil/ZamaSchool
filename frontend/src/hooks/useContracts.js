@@ -207,7 +207,8 @@ export const useAddressStorage = () => {
   } = useReadContract({
     address: contractAddress,
     abi: AddressStorageABI,
-    functionName: 'getStoredAddress',
+    functionName: 'getStoredAddressByUser',
+    args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!contractAddress,
     }

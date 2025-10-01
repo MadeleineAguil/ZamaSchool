@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi'
 import { isAddress } from 'viem'
 import { getContractAddress } from '../config/contracts'
 import { useI18n } from '../contexts/I18nContext'
+import { useAddressStorage } from '../hooks/useContracts'
 
 const AddressStorage = () => {
   const { instance, isInitialized } = useFHEVM()
@@ -17,6 +18,12 @@ const AddressStorage = () => {
 
   // Contract address
   const CONTRACT_ADDRESS = getContractAddress('AddressStorage', chainId)
+
+  // Contract write helpers
+  const {
+    storeAddress: writeStoreAddress,
+    storeRandomAddress: writeStoreRandomAddress,
+  } = useAddressStorage()
 
   const generateRandomAddress = () => {
     // Generate a random Ethereum address
@@ -83,11 +90,14 @@ const AddressStorage = () => {
     try {
       // Call contract to store the encrypted address
       if (encryptedData.isRandomAddress) {
-        console.log('Call contract storeRandomAddress...')
+        const tx = await writeStoreRandomAddress()
+        setTxHash(tx?.hash || '')
       } else {
-        console.log('Call contract storeAddress...')
+        const tx = await writeStoreAddress({
+          args: [encryptedData.handle, encryptedData.inputProof]
+        })
+        setTxHash(tx?.hash || '')
       }
-      setTxHash('0xMOCK_TX_HASH')
     } catch (error) {
       console.error('Store failed:', error)
       alert(t('address_storage.store_failed') + ' ' + error.message)
