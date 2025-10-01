@@ -163,7 +163,7 @@ const translations = {
     'sdk.note': 'Note:',
     'sdk.note_desc': 'Please complete SDK initialization before proceeding to the next step. The initialization process creates a connection to the Zama network, which is a prerequisite for performing encryption operations.',
     // Common
-    'common.init_sdk_first': 'Please complete SDK initialization in Step 1 first',
+    'common.init_sdk_first': 'Please complete SDK initialization in Step 3 first',
     'common.sdk_required_for_crypto': 'SDK must be initialized before performing encryption operations',
     'common.learning_objectives': 'Learning Objectives:',
     'common.contract_code': 'Smart Contract Code:',
@@ -349,7 +349,7 @@ const translations = {
     'sdk.note': '注意：',
     'sdk.note_desc': '请完成 SDK 初始化后再进行下一步操作。初始化过程会创建与 Zama 网络的连接，这是进行加密操作的前提条件。',
     // Common
-    'common.init_sdk_first': '请先完成步骤1中的SDK初始化',
+    'common.init_sdk_first': '请先完成步骤3中的SDK初始化',
     'common.sdk_required_for_crypto': 'SDK必须初始化后才能进行加密操作',
     'common.learning_objectives': '学习目标：',
     'common.contract_code': '智能合约代码:',
@@ -573,7 +573,7 @@ const translations = {
     'number_decrypt.security_note': 'Rappel de sécurité',
     'number_decrypt.security_note_desc': 'Seuls les utilisateurs avec les bonnes autorisations peuvent déchiffrer. Le contrat gère les permissions via ACL.',
     // Commun
-    'common.init_sdk_first': 'Veuillez d\'abord terminer l\'initialisation du SDK à l\'étape 1',
+    'common.init_sdk_first': 'Veuillez d\'abord terminer l\'initialisation du SDK à l\'étape 3',
     'common.sdk_required_for_crypto': 'Le SDK doit être initialisé avant d\'effectuer des opérations de chiffrement',
     'common.learning_objectives': 'Objectifs d\'apprentissage :',
     'common.contract_code': 'Code du contrat intelligent :',
