@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { enUS } from '@rainbow-me/rainbowkit/locales'
+// import { enUS } from '@rainbow-me/rainbowkit/locales'
 
 import { config } from './wagmi.js'
 import './index.css'
@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider locale={enUS}>
+        <RainbowKitProvider locale={"en"}>
           <App />
         </RainbowKitProvider>
       </QueryClientProvider>
