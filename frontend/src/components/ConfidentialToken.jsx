@@ -186,6 +186,36 @@ const ConfidentialToken = () => {
         <p style={{ margin: 0 }}>{t('ctoken.intro_2')}</p>
       </div>
 
+      {/* Contract code example */}
+      <div style={{ marginBottom: '16px' }}>
+        <h5>📝 {t('ctoken.contract_code')}</h5>
+        <div style={{ background: '#f8f9fa', padding: '12px', borderRadius: '8px' }}>
+          <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// contracts/ConfidentialUSDT.sol
+// SPDX-License-Identifier: BSD-3-Clause-Clear
+pragma solidity ^0.8.24;
+
+import {ConfidentialFungibleToken} from "new-confidential-contracts/token/ConfidentialFungibleToken.sol";
+import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
+import {FHE, euint64} from "@fhevm/solidity/lib/FHE.sol";
+
+contract ConfidentialUSDT is ConfidentialFungibleToken, SepoliaConfig {
+    constructor() ConfidentialFungibleToken("cUSDT", "cUSDT", "") {}
+
+    // Simple faucet for demo: mints 100 cUSDT (assuming 6 decimals → 100 * 1_000_000)
+    function faucet() external {
+        _mint(msg.sender, FHE.asEuint64(100 * 1_000_000));
+    }
+
+    // Inherited from ConfidentialFungibleToken:
+    // function confidentialBalanceOf(address account) external view returns (euint64);
+    // function confidentialTransfer(address to, externalEuint64 encryptedAmount, bytes calldata inputProof)
+    //     external returns (euint64);
+    // function decimals() external view returns (uint8);
+}
+`}</pre>
+        </div>
+      </div>
+
       {/* <div style={{ marginBottom: '16px' }}>
         <label style={{ fontWeight: 'bold' }}>{t('ctoken.contract_addr')}</label>
         <input
