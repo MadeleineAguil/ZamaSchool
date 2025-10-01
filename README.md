@@ -1,4 +1,4 @@
-# ZamaSchool
+# ZamaSchool 🎓
 
 <div align="center">
 
@@ -8,7 +8,7 @@
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/)
 [![Powered by Zama](https://img.shields.io/badge/Powered%20by-Zama-purple)](https://www.zama.ai/)
 
-[Live Demo](#) | [Documentation](https://docs.zama.ai/fhevm) | [Report Bug](https://github.com/your-repo/issues) | [Request Feature](https://github.com/your-repo/issues)
+[Live Demo](#) | [Documentation](https://docs.zama.ai/fhevm) | [Report Bug](https://github.com/MadeleineAguil/ZamaSchool/issues) | [Request Feature](https://github.com/MadeleineAguil/ZamaSchool/issues)
 
 </div>
 
@@ -277,7 +277,7 @@ git --version
 
 #### 1. **Clone the Repository**
 ```bash
-git clone https://github.com/your-username/ZamaSchool.git
+git clone https://github.com/MadeleineAguil/ZamaSchool.git
 cd ZamaSchool
 ```
 
@@ -321,7 +321,8 @@ After deploying contracts (see Deployment section), update `frontend/src/config/
 export const CONTRACT_ADDRESSES = {
   NumberStorage: "0xYourNumberStorageAddress",
   AddressStorage: "0xYourAddressStorageAddress",
-  OnchainDecryption: "0xYourOnchainDecryptionAddress"
+  OnchainDecryption: "0xYourOnchainDecryptionAddress",
+  ConfidentialToken: "0xYourConfidentialTokenAddress"
 };
 ```
 
@@ -367,7 +368,8 @@ ZamaSchool/
 ├── contracts/                      # Smart contract source files
 │   ├── NumberStorage.sol           # Encrypted number storage & operations
 │   ├── AddressStorage.sol          # Encrypted address storage
-│   └── OnchainDecryption.sol       # On-chain decryption demonstrations
+│   ├── OnchainDecryption.sol       # On-chain decryption demonstrations
+│   └── ConfidentialToken.sol       # Confidential ERC20-like token
 │
 ├── deploy/                         # Deployment scripts
 │   └── 01_deploy_contracts.ts      # Hardhat-deploy script
@@ -383,7 +385,8 @@ ZamaSchool/
 │   │   │   ├── AddressDecryption.jsx # Address decryption UI
 │   │   │   ├── FHECalculations.jsx  # Arithmetic operations UI
 │   │   │   ├── NumberComparison.jsx # Comparison operations UI
-│   │   │   └── OnchainDecryption.jsx # Public decryption UI
+│   │   │   ├── OnchainDecryption.jsx # Public decryption UI
+│   │   │   └── ConfidentialToken.jsx # Confidential token demo
 │   │   │
 │   │   ├── hooks/                  # Custom React hooks
 │   │   │   ├── useFHEVM.js         # FHEVM SDK initialization
@@ -391,7 +394,8 @@ ZamaSchool/
 │   │   │   └── useEthersSigner.js  # Ethers.js signer hook
 │   │   │
 │   │   ├── contexts/               # React contexts
-│   │   │   └── FHEVMContext.jsx    # Global FHEVM state
+│   │   │   ├── FHEVMContext.jsx    # Global FHEVM state
+│   │   │   └── I18nContext.jsx     # Internationalization context
 │   │   │
 │   │   ├── config/                 # Configuration files
 │   │   │   └── contracts.js        # Contract addresses & ABIs
@@ -461,6 +465,18 @@ ZamaSchool/
 
 **Use Cases**: Public auctions, lottery results, transparent encrypted computations
 
+### **4. ConfidentialToken.sol**
+
+**Purpose**: Demonstrates a confidential ERC20-like token with encrypted balances.
+
+**Key Functions**:
+- `mint(externalEuint64, bytes)`: Mint encrypted tokens to caller
+- `transfer(address, externalEuint64, bytes)`: Transfer encrypted amount to recipient
+- `balanceOf(address)`: Get encrypted balance of an account
+- `totalSupply()`: Get encrypted total supply
+
+**Use Cases**: Private token systems, confidential payments, encrypted asset transfers
+
 ---
 
 ## 🖥️ Frontend Features
@@ -469,7 +485,7 @@ ZamaSchool/
 
 Users progress through lessons in logical order:
 ```
-Step 1: SDK Introduction
+Step 1: Introduction & SDK Overview
    ↓
 Step 2: SDK Installation Demo
    ↓
@@ -481,11 +497,13 @@ Step 5: Encrypted Address Storage
    ↓
 Step 6: Address Decryption
    ↓
-Step 7: FHE Arithmetic Operations
+Step 7: On-Chain Public Decryption
    ↓
-Step 8: FHE Comparison Operations
+Step 8: FHE Arithmetic Operations
    ↓
-Step 9: On-Chain Public Decryption
+Step 9: FHE Comparison Operations
+   ↓
+Step 10: Confidential Token Demo
 ```
 
 ### **2. Component Highlights**
@@ -529,6 +547,13 @@ Step 9: On-Chain Public Decryption
 - Pending status visualization
 - Oracle callback monitoring
 - Public decrypted result display
+
+#### **ConfidentialToken.jsx**
+- Confidential token minting
+- Encrypted token transfers
+- Encrypted balance viewing with decryption
+- Total supply tracking
+- Multi-language support (EN/中文/FR)
 
 ---
 
@@ -704,6 +729,7 @@ sum = FHE.select(hasOverflow, FHE.asEuint32(type(uint32).max), sum);
 - [x] FHE arithmetic operations (add, subtract, multiply, divide)
 - [x] FHE comparison operations (eq, gt, lt, ge, le)
 - [x] Multi-user encrypted operations
+- [x] Confidential token implementation (ERC20-like with FHE)
 
 ### **Phase 2: Advanced FHE Features** 🚧 (In Progress)
 - [ ] Encrypted array operations
@@ -714,10 +740,11 @@ sum = FHE.select(hasOverflow, FHE.asEuint32(type(uint32).max), sum);
 
 ### **Phase 3: Real-World Applications** 📋 (Planned)
 - [ ] Private DeFi lending protocol demo
-- [ ] Confidential ERC20 token implementation
+- [ ] Advanced confidential token features (allowances, approvals)
 - [ ] Encrypted auction system
 - [ ] Private voting DAO
 - [ ] Confidential NFT metadata
+- [ ] Multi-language support (English, Chinese, French)
 
 ### **Phase 4: Developer Tools** 🔮 (Future)
 - [ ] Interactive code playground
@@ -750,7 +777,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/your-username/ZamaSchool.git
+   git clone https://github.com/MadeleineAguil/ZamaSchool.git
    cd ZamaSchool
    ```
 
@@ -826,8 +853,8 @@ This project is licensed under the **BSD-3-Clause-Clear License**. See the [LICE
 - 📖 **Documentation**: [Zama FHEVM Docs](https://docs.zama.ai/fhevm)
 - 💬 **Discord**: [Zama Community Discord](https://discord.gg/zama)
 - 🐦 **Twitter**: [@zama_fhe](https://twitter.com/zama_fhe)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-repo/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/your-repo/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/MadeleineAguil/ZamaSchool/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/MadeleineAguil/ZamaSchool/discussions)
 
 ### **Community Resources**
 
@@ -863,12 +890,13 @@ A: FHE provides computational privacy but requires careful ACL management. Alway
 
 ## 📊 Project Statistics
 
-- **Smart Contracts**: 3 production contracts (NumberStorage, AddressStorage, OnchainDecryption)
+- **Smart Contracts**: 4 production contracts (NumberStorage, AddressStorage, OnchainDecryption, ConfidentialToken)
 - **Frontend Components**: 10+ interactive React components
-- **FHE Operations Demonstrated**: 15+ (arithmetic, comparison, encryption, decryption)
-- **Lines of Code**: ~5,000+ (contracts + frontend + tests)
-- **Test Coverage**: 95%+ (comprehensive unit and integration tests)
-- **Documentation**: 3,000+ lines of detailed guides and examples
+- **FHE Operations Demonstrated**: 15+ (arithmetic, comparison, encryption, decryption, token operations)
+- **Lines of Code**: ~6,000+ (contracts + frontend + tests)
+- **Supported Languages**: 3 (English, Chinese, French)
+- **Interactive Lessons**: 11 progressive tutorials
+- **Documentation**: 4,000+ lines of detailed guides and examples
 
 ---
 
@@ -882,9 +910,9 @@ If you find ZamaSchool useful, please consider giving it a ⭐ on GitHub! Your s
 
 For inquiries, partnerships, or questions:
 
-- **Email**: your-email@example.com
-- **GitHub**: [@your-username](https://github.com/your-username)
-- **Twitter**: [@your-twitter](https://twitter.com/your-twitter)
+- **GitHub**: [MadeleineAguil](https://github.com/MadeleineAguil)
+- **Project Repository**: [ZamaSchool](https://github.com/MadeleineAguil/ZamaSchool)
+- **Issues**: [Report a Bug](https://github.com/MadeleineAguil/ZamaSchool/issues)
 
 ---
 
@@ -892,6 +920,8 @@ For inquiries, partnerships, or questions:
 
 **Built with ❤️ for the Privacy-Preserving Future of Blockchain**
 
-[⬆ Back to Top](#zamaschool)
+**Powered by Zama | Fully Homomorphic Encryption Learning Platform**
+
+[⬆ Back to Top](#zamaschool--)
 
 </div>
