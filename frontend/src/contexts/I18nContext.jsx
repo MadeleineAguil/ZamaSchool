@@ -895,6 +895,17 @@ Object.assign(translations.en, {
   'cmp.users_compare_failed': 'Users comparison failed:',
   'cmp.no_result_found': 'No comparison result found. Please perform a comparison first.',
   'cmp.decrypt_failed': 'Decrypt comparison result failed:',
+  // Detailed comparison option labels/descriptions
+  'cmp.equal.label': 'Equal (==)',
+  'cmp.equal.desc': 'Check if stored number equals the input',
+  'cmp.greater.label': 'Greater (>)',
+  'cmp.greater.desc': 'Check if stored number is greater than the input',
+  'cmp.less.label': 'Less (<)',
+  'cmp.less.desc': 'Check if stored number is less than the input',
+  'cmp.greater_or_equal.label': 'Greater or equal (>=)',
+  'cmp.greater_or_equal.desc': 'Check if stored number is greater than or equal to the input',
+  'cmp.less_or_equal.label': 'Less or equal (<=)',
+  'cmp.less_or_equal.desc': 'Check if stored number is less than or equal to the input',
 })
 
 Object.assign(translations.zh, {
@@ -1180,6 +1191,17 @@ Object.assign(translations.zh, {
   'cmp.users_compare_failed': '用户比较失败:',
   'cmp.no_result_found': '没有找到比较结果，请先进行比较操作',
   'cmp.decrypt_failed': '解密比较结果失败:',
+  // 比较类型详细文案
+  'cmp.equal.label': '等于 (==)',
+  'cmp.equal.desc': '检查存储数字是否等于输入数字',
+  'cmp.greater.label': '大于 (>)',
+  'cmp.greater.desc': '检查存储数字是否大于输入数字',
+  'cmp.less.label': '小于 (<)',
+  'cmp.less.desc': '检查存储数字是否小于输入数字',
+  'cmp.greater_or_equal.label': '大于等于 (>=)',
+  'cmp.greater_or_equal.desc': '检查存储数字是否大于等于输入数字',
+  'cmp.less_or_equal.label': '小于等于 (<=)',
+  'cmp.less_or_equal.desc': '检查存储数字是否小于等于输入数字',
 })
 
 Object.assign(translations.fr, {
@@ -1465,6 +1487,17 @@ Object.assign(translations.fr, {
   'cmp.users_compare_failed': 'Échec de la comparaison entre utilisateurs :',
   'cmp.no_result_found': 'Aucun résultat trouvé. Veuillez d\'abord effectuer une comparaison',
   'cmp.decrypt_failed': 'Échec du déchiffrement du résultat :',
+  // Libellés/descriptions détaillés des options de comparaison
+  'cmp.equal.label': 'Égal (==)',
+  'cmp.equal.desc': "Vérifier si le nombre stocké est égal à l'entrée",
+  'cmp.greater.label': 'Supérieur (>)',
+  'cmp.greater.desc': "Vérifier si le nombre stocké est supérieur à l'entrée",
+  'cmp.less.label': 'Inférieur (<)',
+  'cmp.less.desc': "Vérifier si le nombre stocké est inférieur à l'entrée",
+  'cmp.greater_or_equal.label': 'Supérieur ou égal (>=)',
+  'cmp.greater_or_equal.desc': "Vérifier si le nombre stocké est supérieur ou égal à l'entrée",
+  'cmp.less_or_equal.label': 'Inférieur ou égal (<=)',
+  'cmp.less_or_equal.desc': "Vérifier si le nombre stocké est inférieur ou égal à l'entrée",
 })
 
 export const I18nProvider = ({ children }) => {
