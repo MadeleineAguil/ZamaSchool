@@ -293,13 +293,13 @@ export const useOnchainDecryption = () => {
   })
 
   // Store encrypted number
-  const storeEncryptedNumber = async (encryptedNumber) => {
+  const storeEncryptedNumber = async (encryptedNumber, inputProof) => {
     if (!signer || !contractAddress) return
     setIsWriting(true)
     try {
       const signerPromise = await signer
       const contract = new Contract(contractAddress, OnchainDecryptionABI, signerPromise)
-      const tx = await contract.storeEncryptedNumber(encryptedNumber)
+      const tx = await contract.storeEncryptedNumber(encryptedNumber, inputProof)
       setWriteData(tx)
       await tx.wait()
       return tx

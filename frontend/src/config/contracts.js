@@ -13,7 +13,7 @@ export const CONTRACTS = {
     chainId: 11155111,
     NumberStorage: '0xaa2860ECce337D7a823bBe42E1e1E135297A876d',
     AddressStorage: '0x547c23dAb2a07B4b8a268c8790338B5d8Db86A3d',
-    OnchainDecryption: '0x6398469769A329f8A4DB96995f5A66272ccFA489'
+    OnchainDecryption: '0x2B257b814b4C1eBfd1341A3f5a39c371AD34AA80'
   }
 }
 

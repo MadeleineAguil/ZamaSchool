@@ -139,9 +139,14 @@ const abi =
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "ciphertext",
+        "internalType": "externalEuint32",
+        "name": "inputNumber",
         "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
       }
     ],
     "name": "storeEncryptedNumber",
@@ -201,4 +206,3 @@ const abi =
 ];
 
 export default abi as const;
-

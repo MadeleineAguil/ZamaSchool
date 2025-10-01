@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {FHE, euint32} from "@fhevm/solidity/lib/FHE.sol";
+import {FHE, euint32, externalEuint32} from "@fhevm/solidity/lib/FHE.sol";
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title OnchainDecryption - 链上解密教学合约
@@ -26,9 +26,12 @@ contract OnchainDecryption is SepoliaConfig {
 
     mapping (uint256=>address) public requestIds;
 
-    /// @notice 存储加密的32位数字
-    function storeEncryptedNumber(euint32 _encryptedNumber) external {
-        userEncryptedNumbers[msg.sender] = _encryptedNumber;
+    /// @notice 存储加密的32位数字（从外部密文+证明转换）
+    function storeEncryptedNumber(externalEuint32 inputNumber, bytes calldata inputProof) external {
+        // 将外部密文转换为合约内部密文类型
+        euint32 encryptedNumber = FHE.fromExternal(inputNumber, inputProof);
+
+        userEncryptedNumbers[msg.sender] = encryptedNumber;
 
         // 设置ACL权限
         FHE.allowThis(userEncryptedNumbers[msg.sender]);

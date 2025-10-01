@@ -52,8 +52,11 @@ const OnchainDecryption = () => {
       input.add32(parseInt(inputNumber))
       const encryptedInput = await input.encrypt()
 
-      // Call contract to store
-      await storeEncryptedNumber(encryptedInput.handles[0])
+      // Call contract to store (external ciphertext + proof)
+      await storeEncryptedNumber(
+        encryptedInput.handles[0],
+        encryptedInput.inputProof
+      )
 
       alert(t('onchain.store_success'))
     } catch (error) {
