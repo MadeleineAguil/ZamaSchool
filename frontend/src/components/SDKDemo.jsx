@@ -129,6 +129,29 @@ await contract.storeNumber(
               ❌ {t('sdk.init_failed')} {error}
             </div>
           )}
+
+          {/* SDK initialization code example */}
+          <div style={{ marginTop: '12px' }}>
+            <h5>📝 SDK initialization code:</h5>
+            <div style={{ backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px' }}>
+              <pre style={{ margin: 0, fontSize: '12px', overflow: 'auto' }}>{`// 1) Initialize SDK
+import { initSDK, createInstance, SepoliaConfig } from '@zama-fhe/relayer-sdk/bundle'
+
+await initSDK()
+
+// 2) Create FHEVM instance
+const config = {
+  ...SepoliaConfig,
+  network: window.ethereum
+}
+const instance = await createInstance(config)
+
+// 3) (Optional) Create encrypted input
+const input = instance.createEncryptedInput(contractAddress, userAddress)
+input.add32(42)
+const encryptedInput = await input.encrypt()`}</pre>
+            </div>
+          </div>
         </div>
       )}
 
