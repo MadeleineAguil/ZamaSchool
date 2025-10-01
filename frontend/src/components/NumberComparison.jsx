@@ -31,6 +31,14 @@ const NumberComparison = () => {
     getStoredError
   } = useNumberStorage()
 
+  // Helper to detect empty euint32 (0x00..)
+  const isZeroBytes32 = (v) => {
+    if (!v) return true
+    const s = v.toString()
+    return /^0x0{64}$/i.test(s)
+  }
+  const hasStoredNumber = storedNumber && !isZeroBytes32(storedNumber)
+
   const comparisonTypes = [
     { value: 'equal', label: t('cmp.equal.label'), description: t('cmp.equal.desc') },
     { value: 'greater', label: t('cmp.greater.label'), description: t('cmp.greater.desc') },
@@ -45,7 +53,7 @@ const NumberComparison = () => {
       return
     }
 
-    if (!storedNumber) {
+    if (!hasStoredNumber) {
       alert(t('cmp.no_stored_number'))
       return
     }
@@ -271,7 +279,7 @@ const compareNumbers = async (compareValue, comparisonType) => {
           {t('cmp.plan1_desc')}
         </p>
 
-        {!storedNumber && (
+        {!hasStoredNumber && (
           <div style={{ padding: '10px', backgroundColor: '#fff3cd', borderRadius: '4px', marginBottom: '15px' }}>
             ⚠️ {t('cmp.no_number_tip')}
           </div>
@@ -317,7 +325,7 @@ const compareNumbers = async (compareValue, comparisonType) => {
 
         <button
           onClick={handleSingleComparison}
-          disabled={!instance || !comparisonValue || !storedNumber || isComparing}
+          disabled={!instance || !comparisonValue || !hasStoredNumber || isComparing}
           style={{
             padding: '10px 20px',
             backgroundColor: '#2196F3',

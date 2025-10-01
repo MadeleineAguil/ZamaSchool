@@ -113,6 +113,39 @@ const abi =
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getStoredNumberByUser",
+    "outputs": [
+      { "internalType": "euint32", "name": "", "type": "bytes32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getCalculationResult",
+    "outputs": [
+      { "internalType": "euint32", "name": "", "type": "bytes32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getComparisonResult",
+    "outputs": [
+      { "internalType": "ebool", "name": "", "type": "bytes32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "externalEuint32",
         "name": "inputNumber",
@@ -197,6 +230,17 @@ const abi =
       }
     ],
     "name": "compareStoredNumberLessOrEqual",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "userA", "type": "address" },
+      { "internalType": "address", "name": "userB", "type": "address" },
+      { "internalType": "string", "name": "comparisonType", "type": "string" }
+    ],
+    "name": "compareTwoUsersNumbers",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

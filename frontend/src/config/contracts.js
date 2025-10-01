@@ -11,9 +11,9 @@ export const CONTRACTS = {
   // Sepolia testnet
   sepolia: {
     chainId: 11155111,
-    NumberStorage: '0xaa2860ECce337D7a823bBe42E1e1E135297A876d',
-    AddressStorage: '0x547c23dAb2a07B4b8a268c8790338B5d8Db86A3d',
-    OnchainDecryption: '0x2B257b814b4C1eBfd1341A3f5a39c371AD34AA80'
+    NumberStorage: '0xdc3F93D07048fD6F00Adc6ca7082203897D48eb9',
+    AddressStorage: '0x624A7932b9A649A96d2e236Da2F98f77550ee597',
+    OnchainDecryption: '0xfCd522fb5D78C55c99a2f1eAC8d68Bc211d8B896'
   }
 }
 
