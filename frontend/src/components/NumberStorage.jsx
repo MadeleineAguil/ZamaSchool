@@ -223,14 +223,14 @@ const encryptAndStore = async () => {
 
       {storedNumber && (
         <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-          <h4>📖 {t('number_storage.stored_title')}</h4>
+          {/* <h4>📖 {t('number_storage.stored_title')}</h4>
           <p><strong>{t('number_storage.cipher_handle')}:</strong></p>
           <code style={{ fontSize: '12px', wordBreak: 'break-all' }}>
             {storedNumber}
           </code>
           <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
             {t('number_storage.stored_handle_desc')}
-          </p>
+          </p> */}
         </div>
       )}
 

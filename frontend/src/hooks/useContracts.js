@@ -20,7 +20,8 @@ export const useNumberStorage = () => {
   const {
     data: storedNumber,
     isError: getStoredError,
-    isLoading: isGettingStored
+    isLoading: isGettingStored,
+    refetch: refetchStoredNumber,
   } = useReadContract({
     address: contractAddress,
     abi: NumberStorageABI,
@@ -58,6 +59,8 @@ export const useNumberStorage = () => {
       const tx = await contract.storeNumber(...args)
       setWriteData(tx)
       await tx.wait()
+      // refresh stored number handle after successful tx
+      try { await refetchStoredNumber?.() } catch {}
       return tx
     } catch (error) {
       console.error('Error storing number:', error)
@@ -173,6 +176,7 @@ export const useNumberStorage = () => {
     storedNumber,
     isGettingStored,
     getStoredError,
+    refetchStoredNumber,
     // Calculation
     calculationResult,
     isGettingResult,

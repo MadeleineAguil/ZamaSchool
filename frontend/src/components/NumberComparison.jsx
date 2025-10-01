@@ -228,6 +228,7 @@ const NumberComparison = () => {
           <li>{t('cmp.goal_3')}</li>
           <li>{t('cmp.goal_4')}</li>
         </ul>
+         <p>Encrypted Comparison only return the compare result, not reveal the real number.</p>
 
         <div style={{ marginTop: '15px' }}>
           <h5>📝 {t('cmp.contract_code')}</h5>
@@ -430,6 +431,7 @@ const compareNumbers = async (compareValue, comparisonType) => {
 
       <div style={{ marginBottom: '20px', padding: '20px', backgroundColor: '#e8f5e8', borderRadius: '8px' }}>
         <h4>{t('cmp.view_result')}</h4>
+        <p>Encrypted Comparison only return the compare result, not reveal the real number.</p>
         <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
           {t('cmp.decrypt_tip')}
         </p>
